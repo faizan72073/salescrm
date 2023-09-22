@@ -25,8 +25,11 @@ echo view('cpanel-layout/navbar');
 				<!-- Container -->
 		<div class="container-xxl">
         <div class="row">
-             <div class="col-lg-11">
+             <div class="col-lg-10">
 				<h4 class="page-title">Allow Access <br><small><?= $userInfo->firstname.' '.$userInfo->lastname ;?> </small></h4>
+         </div>
+		 <div class="col-lg-2">
+				<a href="<?= base_url()?>/user/special-access/<?= $userInfo->id ?>"><button class="btn btn-primary">Special Access</button></a>
          </div>
      </div>
 

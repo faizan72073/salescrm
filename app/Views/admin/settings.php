@@ -1927,6 +1927,23 @@ function show_country_state_city(){
     }
 </script>
 
+<script>
+$(document).ready(function(){
+
+	
+    $('a[data-bs-toggle="tab"]').on('show.bs.tab', function(e) {
+        localStorage.setItem('activeTabSetting', $(e.target).attr('href'));
+    });
+    var activeTabsetting = localStorage.getItem('activeTabSetting');
+    if(activeTabsetting){
+        $('.nav-tabs a[href="' + activeTabsetting + '"]').tab('show');
+
+    } else {
+		$('.nav-tabs a[href="#application"]').tab('show');
+	}
+});
+</script>
+
 
 
 <script>

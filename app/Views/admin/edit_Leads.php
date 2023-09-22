@@ -706,6 +706,8 @@ echo view('cpanel-layout/footer');
 
 <script>
 $(document).ready(function(){
+
+	
     $('a[data-bs-toggle="tab"]').on('show.bs.tab', function(e) {
         localStorage.setItem('activeTab', $(e.target).attr('href'));
     });

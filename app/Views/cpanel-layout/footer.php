@@ -95,6 +95,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title mt-0" id="myModalLabel">Reminder Detail</h5>
+                <input style="background-color: #fff;cursor: default;" id="read_status" type="hidden" name="title" class="form-control" readonly="">
                 <button class="btn btn-primary markRead" value="1" id="markread">Mark As Read</button>
             </div>
             <form id="viewreminderforme" class="form-horizontal form-label-left input_mask">
@@ -115,7 +116,9 @@
 					<div class="form-group">
 						<label for="content">Message:</label>
 						<div id="text2" style="cursor: default;border: 1px solid #ddd;background: #fff;height: 200px;overflow-x: hidden;overflow-y: scroll;padding: 10px;"><p></p></div>
-					</div>
+                        
+					
+                    </div>
 				</div>
             </form>
         </div><!-- /.modal-content -->
@@ -250,12 +253,21 @@ setInterval(function(){ checkNewReminder(); }, 10000);
             url: "<?php echo base_url(); ?>/Tools/getReminderById",
             data: 'rem_id='+val,
             success: function (res){
-				console.log(res.reminders);
+				console.log(res.remindersUsers);
 
 				$('#datetime2').val(res.reminders.date+' '+res.reminders.time);
 				$('#from2').html(res.remindersUsers[0].firstname);
 				$('#remindTitle2').val(res.reminders.title);
 				$('#text2').html(res.reminders.text);
+                $('#read_status').val(res.reminders.read_status);
+
+                if(res.remindersUsers[0].status == 1){
+                    $('#markread').hide();
+                }
+                else{
+                    $('#markread').show();
+                }
+
                 $('#ViewReminderModelForMe').modal('show');
             },
             error: function (jqXHR, text, error) {

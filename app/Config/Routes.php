@@ -46,6 +46,7 @@ $routes->group('/', ['filter' => 'AuthFilter'], static function ($routes) {
 
     //user allow access
     $routes->get('/user/allow-access/(:num)', 'User::allow_access/$1');
+    $routes->get('/user/special-access/(:num)', 'User::special_access/$1');
     // $routes->get('/user/allow-access/{id}', 'User::user_allow_access');
     //
     $routes->get('/', 'Dashboard::index');

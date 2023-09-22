@@ -159,12 +159,13 @@ class Tools extends BaseController
 	public function markRead()
 	{
 		$error = null;
+		$user_id = session()->get('id');
 		$read_id = $this->input->getPost('read_id');
 		$rem_id = $this->input->getPost('rem_id');
 		
 		//
 		if(empty($error)){
-		$this->db->table('remind_read')->where('rem_id',$rem_id)->update(['status' => '1']);
+		$this->db->table('remind_read')->where('rem_id',$rem_id)->where('user_id',$user_id)->update(['status' => '1']);
 		return $this->response->setStatusCode(200)->setBody('Your Reminder Mark As Read');
 		}
 

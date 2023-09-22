@@ -1,3 +1,10 @@
+
+<head>
+<script src="jquery-3.6.4.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js">
+  </script>
+</head>
+
 <?php
 use CodeIgniter\Database\ConnectionInterface;
 use CodeIgniter\Database\Query;
@@ -1008,8 +1015,48 @@ $db = db_connect();
 						<li class="nav-item">
 
 							<div class="dropdown dropdown-notifications">
+				
+								<a href="#" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown" data-dropdown-animation role="button" aria-haspopup="true" aria-expanded="false"><span class="icon"><span class="position-relative"><span class="feather-icon"><i data-feather="bell"></i></span>
+								  
+									<?php
+								    $user_id = session()->get('id');
+									$currenr_date = date('Y-m-d');
+									$currentTime = date("H:i:s");
 
-								<a href="#" class="btn btn-icon btn-rounded btn-flush-dark flush-soft-hover dropdown-toggle no-caret" data-bs-toggle="dropdown" data-dropdown-animation role="button" aria-haspopup="true" aria-expanded="false"><span class="icon"><span class="position-relative"><span class="feather-icon"><i data-feather="bell"></i></span><span class="badge badge-success badge-indicator position-top-end-overflow-1"></span></span></span></a>
+									
+									$db      = \Config\Database::connect();
+									$builder = $db->table('remind_read as read');
+									$builder->select('read.*, rem.remind_date, rem.time');
+									$builder->join('reminder as rem','rem.rem_id = read.rem_id');
+									$builder->where('read.for',$user_id);
+									$chkstatus = $builder->get()->getResult();
+
+									foreach($chkstatus as $item){
+									$status = $item->status;
+									$rem_date = $item->remind_date;
+									$rem_time = $item->time;
+									
+									if($status == 0 && $rem_date == $currenr_date && $rem_time <= $currentTime){
+
+   
+									// echo '<script type="text/javascript">
+									// 	$(document).ready(function () {
+									// 	setTimeout(function () {
+									// 		location.reload(true);
+									// 	}, 1000);
+									// 	});
+									// </script>';
+							        ?>
+								    <span class="badge badge-success badge-indicator position-top-end-overflow-1"></span>
+
+									<?php
+									}
+								}
+									?>
+						          
+								  </span>
+								  </span>
+							   </a>
 
 								<div class="dropdown-menu dropdown-menu-end p-0">
 
@@ -1027,6 +1074,8 @@ $db = db_connect();
 										<a href="javascript:void(0);" data-id="<?= $item->rem_id ?>" class="dropdown-item view_notification">
 										
 											<div class="media">
+
+											
 
 												<div class="media-head">
 
@@ -1049,6 +1098,7 @@ $db = db_connect();
 														<div class="notifications-text"><?= $item->title ?></div>
 
 														<div class="notifications-info">
+															
 															<?php
 															$today = date('Y-m-d');
 															
@@ -1072,6 +1122,16 @@ $db = db_connect();
 															<?php
 															}
 															?>
+															<?php
+															$status = $item->read_status;
+															if($status == 0){
+															?>
+
+															<span style="margin-left:100px;" class="badge badge-primary badge-indicator"></span>
+
+															<?php
+															}
+															?>
 														</div>
 
 													</div>
@@ -1084,7 +1144,7 @@ $db = db_connect();
 									?>
 
 									</div>
-									<div class="dropdown-footer"><a href="#"><u>View all notifications</u></a></div>
+									<div class="dropdown-footer"><a href="<?= base_url() ?>/tools/all_reminders"><u>View all notifications</u></a></div>
 
 								</div>
 
@@ -1193,9 +1253,11 @@ $db = db_connect();
 
 									<div class="dropdown-divider"></div>
 									
-									<a class="dropdown-item" href="<?php base_url(); ?>/user/user-profile "><span>Profile</span></a>
+									<a class="dropdown-item" href="<?php base_url(); ?>/user/user-profile"><span>Profile</span></a>
 									<div class="dropdown-divider"></div>
+									<a class="dropdown-item" href="<?php base_url(); ?>/tools/notification"><span>Set Reminder</span></a>
 
+									<div class="dropdown-divider"></div>
 									<!-- only admin access this section start point-->
 									<?php
 									if (session()->get('status') === 'admin'){
@@ -1235,9 +1297,7 @@ $db = db_connect();
 			</div>									
 
 		</nav>
-
-
-
+<!-- 
 <script>
 setInterval(myTimer, 1000);
 
@@ -1245,10 +1305,19 @@ function myTimer() {
 const d = new Date();
 var datetime = d.toLocaleTimeString();
 document.getElementById("demo").innerHTML = datetime;
-
 }
+</script> 
+-->
 
+<script type="text/javascript">
+	$(document).ready(function(){
+		checkNewReminder();
+	});
 </script>
+
+
+
+
 
 
 

@@ -1282,8 +1282,11 @@ public function update_feasibility_form()
 	}
 	//
 	if(empty($error)){
+		$pipelineModel = new Model_Pipeline();
+		$pipeDetail = $pipelineModel->get_pipeline()->orderBy('p_order', 'ASC')->get()->getRow();
 		$data = [
 			'stage' => 2,
+			'pipeline_id' => $pipeDetail->id,
 		];
 		$builder = $this->db->table('leads')->where('id',$lead_id)->update($data);
 		return $this->response->setStatusCode(200)->setBody('Stage 2 Activated');

@@ -128,6 +128,7 @@ echo view('cpanel-layout/navbar');
 																	
 																	<div class="card card-border card-simple tasklist-card">
 																		<div class="card-header card-header-action">
+																			<h6 class="fw-bold"><?= $item2->firstname;?></h6>
 																			<h6 class="fw-bold"><?= $item2->deal_title;?></h6>
 
 																			<div class="card-action-wrap">

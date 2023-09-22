@@ -123,17 +123,22 @@ function bell_notification(){
 	//
 	$user_id = session()->get('id');
 	$today = date('Y-m-d');
-	$currentTime = strtotime(date('h:i'));
+	$currentTime = date("H:i");
+
+	// echo $currentTime;
+
+// 	$date = '19:24:15 06/13/2013'; 
+// echo date('h:i:s', strtotime($date));
 	// $builder = $db->table('reminder')->join('remind_read', 'reminder.user_id = remind_read.for');;
 	// $query = $builder->orderBy('remind_date', 'DESC');
 	
 	$builder = $db->table('reminder as rem');
-	$builder->select('rem.*, read.*, users.id, users.firstname,users.lastname');
+	$builder->select('rem.*, read.status as read_status, users.id, users.firstname,users.lastname');
 	$builder->join('remind_read as read','read.rem_id = rem.rem_id');
 	$builder->join('users as users','read.user_id = users.id');
 	$builder->where('read.for', $user_id);
 	$builder->where('rem.remind_date <=', $today);
-	// $builder->where('rem.time <=', $currentTime);
+	$builder->where('rem.time <=', $currentTime);
 
 	// $query = $builder->orderBy('remind_date');
 

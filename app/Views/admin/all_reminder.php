@@ -115,7 +115,7 @@ echo view('cpanel-layout/navbar');
 															<td class="text-center">
 																<?php
 																if($value->status == 0){
-																echo "<script>document.getElementById('markread').style.display = 'block';</script>"	
+	
 																?>
 																<span class="badge badge-soft-primary">New</span>
 
@@ -201,7 +201,7 @@ echo view('cpanel-layout/navbar');
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title mt-0" id="myModalLabel">Reminder Detail</h5>
-                <button class="btn btn-primary markRead" value="1" id="markread">Mark As Read</button>
+                <!-- <button class="btn btn-primary markRead" value="1" id="markread">Mark As Read</button> -->
             </div>
             <form id="viewreminderforme" class="form-horizontal form-label-left input_mask">
 			<div class="modal-body">

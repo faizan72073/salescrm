@@ -124,9 +124,10 @@ echo view('cpanel-layout/navbar');
 																	?>
 																	
 																	<div class="card card-border card-simple tasklist-card">
-																		<div class="card-header card-header-action">
-																			<h6 class="fw-bold"><?= $item2->deal_title;?></h6>
-
+																		<div class="card-header card-header-action"> 
+																			<h6 class="fw-bold"><?= $item2->firstname." &nbsp;".$item2->lastname;?></h6>
+																			<h6 class="fw-bold"><?= $item2->deal_title?></h6>
+																			<!-- <span class="badge badge-sm badge-soft-primary mr-20">generated this lead</span> -->
 																			<div class="card-action-wrap">
 																				<a class="btn btn-xs btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" href="#" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><i data-feather="more-vertical"></i></span></span></a>
 																				<div class="dropdown-menu dropdown-menu-end">

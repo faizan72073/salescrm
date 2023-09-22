@@ -698,6 +698,22 @@ class User extends BaseController
 				->addNumbering('no')->toJson(true);
 			}
 	  }
+
+	  public function special_access($id){	
+
+		$sess_status = session()->get('status');
+		$uri = new \CodeIgniter\HTTP\URI(current_url());
+		//
+		$users = new Model_Users();
+		$menu = new Model_Menu();
+		$data['userInfo'] = $users->get_users($id)->get()->getRow();
+		$data['data2'] = $users->submenu_list();
+		
+		$data['modelUser'] = new Model_Users();
+		$data['id'] = $uri->getSegment(3);
+		
+		return view('admin/user_special_access',$data);
+	}
 	  
 
 }
