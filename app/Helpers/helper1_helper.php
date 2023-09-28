@@ -127,8 +127,8 @@ function bell_notification(){
 
 	// echo $currentTime;
 
-// 	$date = '19:24:15 06/13/2013'; 
-// echo date('h:i:s', strtotime($date));
+	// 	$date = '19:24:15 06/13/2013'; 
+	// echo date('h:i:s', strtotime($date));
 	// $builder = $db->table('reminder')->join('remind_read', 'reminder.user_id = remind_read.for');;
 	// $query = $builder->orderBy('remind_date', 'DESC');
 	
@@ -140,12 +140,37 @@ function bell_notification(){
 	$builder->where('rem.remind_date <=', $today);
 	$builder->where('rem.time <=', $currentTime);
 
-	// $query = $builder->orderBy('remind_date');
+	$query = $builder->orderBy('remind_date','ASC');
 
 	// dd($builder);
 
-	return $builder;
+	return $query;
 
 }
+function special_access($module=null,$uid=null){
+	$db = \Config\Database::connect();
+	//
+	if(empty($uid)){
+		$uid = session()->get('id');	
+	}
+	//
+	$builder = $db->table('special_permissions as special');
+	$builder->join('special_permission_allow as allow','special.id = allow.sp_id');
+
+	$builder->where('allow.user_id',$uid);
+	if(!empty($module)){
+	$builder->where('special.permission',$module);
+	}
+	$builder->where('allow.status',1);
+	$query = $builder->get();
+	// dd($query);
+	//
+	if(count($query->getResultArray())  > 0){
+		return true;
+	}else{
+		return false;
+	}
+}
+
 
 ?>

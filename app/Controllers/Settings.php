@@ -1926,6 +1926,7 @@ public function show_company()
 				</tr>
 			<?php }
 		}
+		
 
 
 }

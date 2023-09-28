@@ -59,4 +59,26 @@ class Model_Users extends Model {
 		}
 		return $builder;	
 	}
+
+	function special_access(){
+		$db = \Config\Database::connect();
+		//
+		$builder = $db->table('special_permissions');
+		// $builder->select('allow.*,special.permission');
+		// $builder->join('special_permission_allow as allow','allow.sp_id = special.id');
+		return $builder;
+	}
+
+	function special_access_detail($module,$id){
+		$db = \Config\Database::connect();
+		//
+		$builder = $db->table('special_permission_allow');
+		// d($builder);
+		// die();
+		$builder->where('user_id',$id);
+		$builder->where('sp_id',$module);
+		$query = $builder->get();
+		return $query;
+	}
+
 }

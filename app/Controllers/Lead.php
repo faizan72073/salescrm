@@ -919,9 +919,6 @@ class Lead extends BaseController
 		}
 
 	}
-
-
-
 	public function lead_won()
 	{
 
@@ -934,7 +931,11 @@ class Lead extends BaseController
 		if(!access_crud('Leads','update')) {
 			$error = "Access Denied";
 		}
-
+		//
+		if(!special_access('can won the lead')){
+			$error = "Access Denied";
+		}
+		//
 		if(empty($error)){
 		$data = [
 			'status' => $status,
@@ -949,8 +950,6 @@ class Lead extends BaseController
 	}
 
 }
-
-
 	public function lead_loss()
 	{
 
@@ -961,6 +960,10 @@ class Lead extends BaseController
 		$status = $this->input->getPost('status');
 
 		if(!access_crud('Leads','update')) {
+			$error = "Access Denied";
+		}
+		//
+		if(!special_access('Can loss the lead')){
 			$error = "Access Denied";
 		}
 
@@ -1240,6 +1243,10 @@ public function update_feasibility_form()
 		$error = "session Timeout";
 	}
 	//
+	if(!special_access('Can upload PO')){
+		$error = "Access Denied";
+	}
+	//
 	if($po == ''){
 		$error = "Please Select PO";
 	}
@@ -1279,6 +1286,10 @@ public function update_feasibility_form()
 	//
 	if(!isLoggedIn()){
 		$error = "session Timeout";
+	}
+
+	if(!special_access('Can enable to COFC')){
+		$error = "Access Denied";
 	}
 	//
 	if(empty($error)){
@@ -1334,7 +1345,13 @@ public function delete_pdf(){
 
 	public function lead_cofc_stage()
 	{
+		$error = null;
 		$sess_status = session()->get('status');
+
+		// if(!special_access('Can enable to COFC','1')){
+
+		// 	$error = "Special Access Denied";
+		// }
 
 		if(isLoggedIn() && access_crud('Leads','view')){
 

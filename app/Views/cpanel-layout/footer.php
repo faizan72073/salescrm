@@ -267,7 +267,6 @@ setInterval(function(){ checkNewReminder(); }, 10000);
                 else{
                     $('#markread').show();
                 }
-
                 $('#ViewReminderModelForMe').modal('show');
             },
             error: function (jqXHR, text, error) {

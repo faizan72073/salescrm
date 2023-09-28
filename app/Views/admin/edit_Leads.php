@@ -34,10 +34,15 @@ echo view('cpanel-layout/navbar');
 										 }
 										?>
 										<button type="button" class="btn btn-outline-danger"  id="LossBtn" value="LOST" <?php echo ($leads->status == 'Lost' ) ? 'active': '' ; ?>>LOST</button>
+										<?php
+										// if(special_access('Can enable to COFC','1')){
+										?>									
 										<button type="button" onclick="show()" class="btn btn-outline-primary" title="CUSTOMER ORDER FULFILLMENT CYCLE"  id="stage2" value="stage2">COFC</button>
+									   <?php
+										// }
+									   ?>
 									</div>
 									
-
 									<div class="position-relative">
 									<label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
 									<select class="form-select " id="movelead">

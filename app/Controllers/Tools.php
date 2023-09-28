@@ -165,7 +165,7 @@ class Tools extends BaseController
 		
 		//
 		if(empty($error)){
-		$this->db->table('remind_read')->where('rem_id',$rem_id)->where('user_id',$user_id)->update(['status' => '1']);
+		$this->db->table('remind_read')->where('rem_id',$rem_id,'user_id',$user_id)->update(['status' => '1']);
 		return $this->response->setStatusCode(200)->setBody('Your Reminder Mark As Read');
 		}
 

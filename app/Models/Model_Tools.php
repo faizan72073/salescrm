@@ -53,6 +53,8 @@ class Model_Tools extends Model {
 		$builder->select('country.*, state.name as state_name, city.name as city_name');
 		$builder->join('state','country.id = state.country_id');
 		$builder->join('city','state.id = city.state_id');
+		$builder->OrderBy('name','ASC');
+
 		$query = $builder->get()->getResult();
 		return $query;
 	}

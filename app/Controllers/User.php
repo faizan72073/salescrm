@@ -700,19 +700,60 @@ class User extends BaseController
 	  }
 
 	  public function special_access($id){	
-
 		$sess_status = session()->get('status');
 		$uri = new \CodeIgniter\HTTP\URI(current_url());
 		//
 		$users = new Model_Users();
-		$menu = new Model_Menu();
+
 		$data['userInfo'] = $users->get_users($id)->get()->getRow();
-		$data['data2'] = $users->submenu_list();
+		$data['data2'] = $users->special_access();
 		
 		$data['modelUser'] = new Model_Users();
 		$data['id'] = $uri->getSegment(3);
+
+		// dd($data['data2']);
 		
 		return view('admin/user_special_access',$data);
+	}
+
+	public function special_access_flip(){
+
+		$module = $this->input->getPost('module');
+		$user_id = $this->input->getPost('user');
+		$oper = $this->input->getPost('operation');
+		// return $oper;
+		// $data = $this->db->table('special_permission_allow')->where('sp_id',$oper)->select('status');
+		// dd($data);
+		$modelUser = new Model_Users();
+		$row = $modelUser->special_access_detail($module,$user_id)->getRow();
+		if($row != ''){
+		// dd($row);
+		//
+		$value = $row->status;
+		if($value == 0){
+			$oper = 1;
+		}
+		else{
+			$oper = 0;
+		}
+		$data = array(
+			'status' => $oper,
+		);
+		$this->db->table('special_permission_allow')->where('sp_id',$module)->where('user_id',$user_id)->update($data);
+
+	}
+
+	else{
+		$data2 = array(
+
+			'user_id' => $user_id,
+			'sp_id' => $module,
+			'status' => 1,
+
+		);
+		$this->db->table('special_permission_allow')->insert($data2);
+	}
+
 	}
 	  
 

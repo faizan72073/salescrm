@@ -1024,7 +1024,7 @@ $db = db_connect();
 									$currentTime = date("H:i:s");
 
 									
-									$db      = \Config\Database::connect();
+									$db = \Config\Database::connect();
 									$builder = $db->table('remind_read as read');
 									$builder->select('read.*, rem.remind_date, rem.time');
 									$builder->join('reminder as rem','rem.rem_id = read.rem_id');
@@ -1037,15 +1037,6 @@ $db = db_connect();
 									$rem_time = $item->time;
 									
 									if($status == 0 && $rem_date == $currenr_date && $rem_time <= $currentTime){
-
-   
-									// echo '<script type="text/javascript">
-									// 	$(document).ready(function () {
-									// 	setTimeout(function () {
-									// 		location.reload(true);
-									// 	}, 1000);
-									// 	});
-									// </script>';
 							        ?>
 								    <span class="badge badge-success badge-indicator position-top-end-overflow-1"></span>
 
@@ -1297,17 +1288,24 @@ $db = db_connect();
 			</div>									
 
 		</nav>
-<!-- 
+
 <script>
+
+// var time = "02:27:00";
+	
 setInterval(myTimer, 1000);
 
 function myTimer() {
 const d = new Date();
 var datetime = d.toLocaleTimeString();
 document.getElementById("demo").innerHTML = datetime;
+
+// if(datetime <= time){
+// 	location.reload();
+// }
 }
 </script> 
--->
+
 
 <script type="text/javascript">
 	$(document).ready(function(){

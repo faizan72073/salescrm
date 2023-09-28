@@ -68,6 +68,13 @@ echo view('cpanel-layout/navbar');
 																<span class="badge badge-soft-danger"></span>
 																<button class="btn btn-primary btn-sm ViewReminderDetail"  data-rem_id="<?php echo $value->rem_id?>"><i class="fa fa-info"></i></button>
 																<?php if ($date > $current && $value->user_id == session()->get('id')): 
+
+																	// echo '<script>
+																	// function autoRefresh() {
+																	// 	window.location = window.location.href;
+																	// }
+																	// setInterval("autoRefresh()", 2000);
+																	// </script>';
 																	// $numOfSeconds = $starttime - $current;
 																?>
 																<!-- <p id="demo2"></p> -->
