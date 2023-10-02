@@ -15,6 +15,11 @@ echo view('cpanel-layout/navbar');
 				<div class="container-xxl">
 				<h1>Dashboard</h1>
 				   Lorem ipsum dolor sit amet consectetur adipisicing elit. Quae, alias ea consectetur, repellat id velit perferendis non esse tenetur quidem omnis nostrum reprehenderit autem aut error cum consequuntur voluptatem incidunt.
+				<?php
+					$department =  session()->get('Department');
+					echo $department;
+				?>
+				
 				</div>
 				<!-- /Container -->
 			</div>

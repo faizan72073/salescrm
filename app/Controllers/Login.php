@@ -49,6 +49,7 @@ class Login extends BaseController
 		if ($validate) {
 			$modelUsers = new Model_Users();
 			$userData = $modelUsers->get_users(null, null, $username)->get()->getRow();
+			$depart_id = $userData->department_id;
 			//
 			if (empty($userData)) {
 				$error = 'Error : No record found';
@@ -60,6 +61,9 @@ class Login extends BaseController
 			//
 			if ($error == NULL) {
 				$modelSetting = new Model_Setting();
+				$depatrment = $modelSetting->get_department($depart_id)->get()->getRow();
+				$department_name = $depatrment->department;
+				// dd($department_name);
 				$checkOTP = $modelSetting->setting('Login OTP')->get()->getRow()->value;
 				$appTitle = $modelSetting->setting('App Title')->get()->getRow()->parameter;
 				//
@@ -89,6 +93,7 @@ class Login extends BaseController
 					session()->set('username', $userData->username);
 					session()->set('fname', $userData->firstname);
 					session()->set('lname', $userData->lastname);
+					session()->set('Department', $department_name);
 					session()->set('email', $userData->email);
 					session()->set('OTP', $code);
 					session()->set('appTitle', $appTitle);
@@ -102,6 +107,7 @@ class Login extends BaseController
 					session()->set('username', $userData->username);
 					session()->set('status', $userData->status);
 					session()->set('fname', $userData->firstname);
+					session()->set('department', $department_name);
 					session()->set('lname', $userData->lastname);
 					session()->set('email', $userData->email);
 					session()->set('appTitle', $appTitle);

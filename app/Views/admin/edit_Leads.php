@@ -28,23 +28,32 @@ echo view('cpanel-layout/navbar');
 										<?php
 										 $stage_status =  $leads->stage;
 										 if($stage_status == 2){
+										 if(special_access('Can won the lead')){
 										?>
 										<button type="button" class="btn btn-outline-success" id="WonBtn" value="WON" <?php echo ($leads->status == 'Won' ) ? 'active': '' ; ?>>WON</button>
 										<?php
 										 }
+										 }
+										 if(special_access('Can loss the lead')){
 										?>
 										<button type="button" class="btn btn-outline-danger"  id="LossBtn" value="LOST" <?php echo ($leads->status == 'Lost' ) ? 'active': '' ; ?>>LOST</button>
 										<?php
-										// if(special_access('Can enable to COFC','1')){
+										 }
+										if(special_access('Can enable to COFC')){
 										?>									
 										<button type="button" onclick="show()" class="btn btn-outline-primary" title="CUSTOMER ORDER FULFILLMENT CYCLE"  id="stage2" value="stage2">COFC</button>
 									   <?php
-										// }
+										}
 									   ?>
 									</div>
 									
 									<div class="position-relative">
 									<label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
+									<?php
+									// $department =  session()->get('Department');
+									// if($department == 'Sales'){
+									if(special_access('can move lead to another department')){
+									?>
 									<select class="form-select " id="movelead">
 										<?php
 										 foreach($pipeline2->get()->getresult() as $item3)
@@ -55,8 +64,10 @@ echo view('cpanel-layout/navbar');
 										}
 										?>
 										</select>	
-
 										<i class="fa fa-question-circle" style="position:absolute; right:-26px; top:15px;cursor:pointer" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-original-title="Move this lead to another department"></i>
+									<?php
+										}
+									?>
 									</div>
 								</header>
 								<div class="task-detail-body m-0">
@@ -123,7 +134,15 @@ echo view('cpanel-layout/navbar');
 										</li> -->
 									</ul>
 									<div class="tab-content mt-7">
-										
+									<?php
+									// $department =  session()->get('Department');
+									// if($department != 'Sales'){
+									// 	$class = "readonly"; 
+									// }
+									if(!access_crud('Leads','update')) {
+											$class = "readonly"; 
+									}
+									?>
 									<div class="tab-pane fade" id="tab_Lead">
 										<form id="EditLeadForm" class="form-horizontal form-label-left">
 										    <input type="hidden" id="lead_id" name="lead_id" value="<?php echo $leads->id ?>">
@@ -134,39 +153,39 @@ echo view('cpanel-layout/navbar');
 													<div class="col-sm-6">	
 														<div class="form-group">
 														   <label class="form-label">Firstname</label>
-															<input class="form-control task-name" placeholder="Firstname" value="<?php echo $leads->firstname ?>" name="firstname_lead" id="exampleFormControlInput1" type="text" />
+															<input class="form-control task-name" placeholder="Firstname" value="<?php echo $leads->firstname ?>" name="firstname_lead" id="exampleFormControlInput1" type="text" <?php echo @$class ?>/>
 														</div>
 													</div>
 													<div class="col-sm-6">	
 														<div class="form-group">
 														   <label class="form-label">lastname</label>
-															<input class="form-control task-name" placeholder="Lastname" value="<?php echo $leads->lastname ?>" name="lastname_lead" id="exampleFormControlInput1" type="text" />
+															<input class="form-control task-name" placeholder="Lastname" value="<?php echo $leads->lastname ?>" name="lastname_lead" id="exampleFormControlInput1" type="text" <?php echo @$class ?>/>
 														</div>
 													</div>
 
 													<div class="col-sm-6">	
 														<div class="form-group">
 														   <label class="form-label">Organization</label>
-															<input class="form-control task-name" placeholder="Organization" value="<?php echo $leads->organization ?>" name="organization" id="exampleFormControlInput1" type="text" />
+															<input class="form-control task-name" placeholder="Organization" value="<?php echo $leads->organization ?>" name="organization" id="exampleFormControlInput1" type="text" <?php echo @$class ?>/>
 														</div>
 													</div>
 													<div class="col-sm-6">	
 														<div class="form-group">
 														    <label class="form-label">Job Title</label>
-															<input class="form-control task-name" placeholder="Job Title" value="<?php echo $leads->job_title ?>" name="job_title" id="exampleFormControlInput1" type="text" />
+															<input class="form-control task-name" placeholder="Job Title" value="<?php echo $leads->job_title ?>" name="job_title" id="exampleFormControlInput1" type="text" <?php echo @$class ?>/>
 														</div>
 													</div>
 
 													<div class="col-sm-6">	
 														<div class="form-group">
 														    <label class="form-label">Email Address</label>
-															<input class="form-control task-name" placeholder="Email Address" value="<?php echo $leads->email_address ?>" name="email_address_lead" id="exampleFormControlInput1" type="text" />
+															<input class="form-control task-name" placeholder="Email Address" value="<?php echo $leads->email_address ?>" name="email_address_lead" id="exampleFormControlInput1" type="text" <?php echo @$class ?>/>
 														</div>
 													</div>
 													<div class="col-sm-6">	
 														<div class="form-group">
 														    <label class="form-label">Phone</label>
-															<input class="form-control task-name" value="<?php echo $leads->phone ?>" placeholder="phone" name="phone" id="exampleFormControlInput1" type="tel" />
+															<input class="form-control task-name" value="<?php echo $leads->phone ?>" placeholder="phone" name="phone" id="exampleFormControlInput1" type="tel" <?php echo @$class ?>/>
 														</div>
 													</div>
 
@@ -190,7 +209,7 @@ echo view('cpanel-layout/navbar');
 													<div class="col-sm-6">
 														<div class="form-group">
 														<label class="form-label">State</label>
-															<select class="form-control" name="state" id="state">
+															<select class="form-control" name="state" id="state" <?php echo @$class ?>>
 															<option value="">select country here</option>	
 															 <?php
 																foreach($state->get()->getResult() as $value){
@@ -210,14 +229,14 @@ echo view('cpanel-layout/navbar');
 												<div class="col-sm-12">	
 													<div class="form-group">
 													   <label class="form-label">Deal Title</label>
-													   <input class="form-control task-name" value="<?php echo $leads->deal_title ?>" placeholder="Deal Title" name="deal_title" id="exampleFormControlInput1" type="text" />
+													   <input class="form-control task-name" value="<?php echo $leads->deal_title ?>" placeholder="Deal Title" name="deal_title" id="exampleFormControlInput1" type="text" <?php echo @$class ?>/>
 													</div>
 												</div>
 
 												<div class="col-sm-6">
 														<div class="form-group">
 														<label>Currency</label>
-															<select class="form-control" name="currency" id="exampleFormControlInput1">
+															<select class="form-control" name="currency" id="exampleFormControlInput1" <?php echo @$class ?>>
 															<option value="PKR">Pakistani Rupee</option>
 															<option value="INR">Indian Rupee</option>
 															</select>
@@ -227,7 +246,7 @@ echo view('cpanel-layout/navbar');
 													<div class="col-sm-6">
 														<div class="form-group">
 														<label class="form-label">Amount</label>
-													     <input class="form-control task-name" value="<?php echo $leads->amount ?>" name="amount"  placeholder="0.00" id="exampleFormControlInput1" type="number" />
+													     <input class="form-control task-name" value="<?php echo $leads->amount ?>" name="amount"  placeholder="0.00" id="exampleFormControlInput1" type="number" <?php echo @$class ?>/>
 														</div>
 													</div>
 									
@@ -235,7 +254,7 @@ echo view('cpanel-layout/navbar');
 												<div class="col-sm-6">
 														<div class="form-group">
 															<label class="form-label">Industry</label>
-															<select class="form-control" name="industry" id="exampleFormControlInput1">
+															<select class="form-control" name="industry" id="exampleFormControlInput1" <?php echo @$class ?>>
 															<option value="finance">Finance</option>
 															<option value="intenet">Tech</option>
 															</select>
@@ -245,19 +264,24 @@ echo view('cpanel-layout/navbar');
 												<div class="col-sm-6">	
 													<div class="form-group">
 													<label class="form-label">Expected Close Date</label>
-													   <input class="form-control task-name" value="<?php echo $leads->expected_close_date ?>" placeholder="choose close date" name="expected_close_date" id="exampleFormControlInput1" type="datetime" />
+													   <input class="form-control task-name" value="<?php echo $leads->expected_close_date ?>" placeholder="choose close date" name="expected_close_date" id="exampleFormControlInput1" type="datetime" <?php echo @$class ?>/>
 													</div>
 												</div>
 											</div>
 										</div>
 
 										<div style="float:right;">
+										<?php
+										if(access_crud('Leads','update')) {
+										?>
 												<!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button> -->
 												<button type="submit" class="btn btn-primary">save</button>
-											</div>
-										</form>	
+										<?php
+										}
+										?>
 									</div>
-
+								</form>	
+							</div>
 									<!----------lead end----->
 
 									<div class="tab-pane fade" id="tab_product">

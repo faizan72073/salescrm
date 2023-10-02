@@ -1238,6 +1238,7 @@ $db = db_connect();
 
 												</div>
 												<div class="fs-7"><?php echo session('email'); ?></div>
+												<span class="badge badge-soft-primary"><?php echo session('department'); ?></span>
 											</div>
 										</div>
 									</div>
