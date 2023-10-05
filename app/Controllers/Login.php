@@ -50,6 +50,7 @@ class Login extends BaseController
 			$modelUsers = new Model_Users();
 			$userData = $modelUsers->get_users(null, null, $username)->get()->getRow();
 			$depart_id = $userData->department_id;
+			// dd($depart_id);
 			//
 			if (empty($userData)) {
 				$error = 'Error : No record found';
@@ -93,7 +94,8 @@ class Login extends BaseController
 					session()->set('username', $userData->username);
 					session()->set('fname', $userData->firstname);
 					session()->set('lname', $userData->lastname);
-					session()->set('Department', $department_name);
+					session()->set('department', $department_name);
+					session()->set('department_designation', $userData->status);
 					session()->set('email', $userData->email);
 					session()->set('OTP', $code);
 					session()->set('appTitle', $appTitle);
@@ -108,6 +110,7 @@ class Login extends BaseController
 					session()->set('status', $userData->status);
 					session()->set('fname', $userData->firstname);
 					session()->set('department', $department_name);
+					session()->set('department_designation', $userData->status);
 					session()->set('lname', $userData->lastname);
 					session()->set('email', $userData->email);
 					session()->set('appTitle', $appTitle);

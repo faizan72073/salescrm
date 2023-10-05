@@ -132,6 +132,7 @@
 										<option value="">select status</option>
 										<option value="admin">Admin</option>
 										<option value="user">User</option>
+										<option value="Hod">Hod</option>
 									</select>
 								</div>
 							</div>

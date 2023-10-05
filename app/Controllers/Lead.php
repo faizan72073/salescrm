@@ -173,6 +173,7 @@ class Lead extends BaseController
 			);
 			//
 			$builder = $this->db->table('leads')->where('id', $lead_id)->update($data);
+			create_action_log("Lead Id (".$lead_id.")");
 			$this->db->transComplete();
 			return $this->response->setStatusCode(200)->setBody('Lead Update Successfully');
 		} else {
@@ -352,7 +353,7 @@ class Lead extends BaseController
 						$sess_id = session()->get('id');
 						if($item->user_id == $sess_id){
 						?>
-						<a href="javascript:void(0);" class="text-danger delChatBtn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete" data-chatid="<?php echo $id;?>"><i style="font-size:12px;" class="fa fa-trash-alt"></i></a>
+						<!-- <a href="javascript:void(0);" class="text-danger delChatBtn" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete" data-chatid="<?php echo $id;?>"><i style="font-size:12px;" class="fa fa-trash-alt"></i></a> -->
 					<?php
 						}
 					?>
@@ -557,6 +558,7 @@ class Lead extends BaseController
 			$pipeDetail = $pipelineModel->get_pipeline()->orderBy('p_order', 'ASC')->get()->getRow();
 			//
 			$data = array(
+				'user_id' => $id,
 				'firstname' => $firstname_lead,
 				'lastname' => $lastname_lead,
 				'organization' => $organization,

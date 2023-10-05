@@ -107,7 +107,8 @@ echo view('cpanel-layout/navbar');
 															<div class="card-action-wrap">
 															<?php
 																$db      = \Config\Database::connect();
-																$builder = $db->table('leads')->where('pipeline_id',$item->id)->where('stage',2);
+																$sess = session()->get('id');
+																$builder = $db->table('leads')->where('pipeline_id',$item->id)->where('stage',2)->where('user_id',$sess);
 																$count = $builder->countAllResults();
 																?>
 												
@@ -121,12 +122,14 @@ echo view('cpanel-layout/navbar');
 															<!--  -->
 															<?php foreach($leads2 as $key => $item2){
 																if($item->id == $item2->pipeline_id){ 
+																	if($item2->user_id == session()->get('id')){
 																	?>
 																	
 																	<div class="card card-border card-simple tasklist-card">
 																		<div class="card-header card-header-action"> 
 																			<h6 class="fw-bold"><?= $item2->firstname." &nbsp;".$item2->lastname;?></h6>
 																			<h6 class="fw-bold"><?= $item2->deal_title?></h6>
+																			
 																			<!-- <span class="badge badge-sm badge-soft-primary mr-20">generated this lead</span> -->
 																			<div class="card-action-wrap">
 																				<a class="btn btn-xs btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" href="#" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><i data-feather="more-vertical"></i></span></span></a>
@@ -182,7 +185,11 @@ echo view('cpanel-layout/navbar');
 																</div>
 															</div>
 														</div>
-													<?php }}?>
+													<?php 
+													}
+												   }
+												 }
+												?>
 
 
 												</div>

@@ -29,19 +29,28 @@ echo view('cpanel-layout/navbar');
 										 $stage_status =  $leads->stage;
 										 if($stage_status == 2){
 										 if(special_access('Can won the lead')){
+										 if($leads->status == 'Won'){
+											$wonstatus = 'active';
+										 }	
 										?>
-										<button type="button" class="btn btn-outline-success" id="WonBtn" value="WON" <?php echo ($leads->status == 'Won' ) ? 'active': '' ; ?>>WON</button>
+										<button type="button" class="btn btn-outline-success <?= @$wonstatus; ?>" id="WonBtn" value="WON">WON</button>
 										<?php
 										 }
 										 }
 										 if(special_access('Can loss the lead')){
+										 if($leads->status == 'Lost'){
+												$lossstatus = 'active';
+										 }	
 										?>
-										<button type="button" class="btn btn-outline-danger"  id="LossBtn" value="LOST" <?php echo ($leads->status == 'Lost' ) ? 'active': '' ; ?>>LOST</button>
+										<button type="button" class="btn btn-outline-danger <?php echo ($leads->status == 'Lost' ) ? 'active': '' ; ?>"  id="LossBtn" value="LOST">LOST</button>
 										<?php
 										 }
 										if(special_access('Can enable to COFC')){
+											if($stage_status == 2){
+												$cofcstatus = 'active';
+										 }	
 										?>									
-										<button type="button" onclick="show()" class="btn btn-outline-primary" title="CUSTOMER ORDER FULFILLMENT CYCLE"  id="stage2" value="stage2">COFC</button>
+										<button type="button" onclick="show()" class="btn btn-outline-primary <?= @$cofcstatus; ?>" title="CUSTOMER ORDER FULFILLMENT CYCLE"  id="stage2" value="stage2">COFC</button>
 									   <?php
 										}
 									   ?>
@@ -878,6 +887,7 @@ $(document).on('change','#movelead',function(){
 		// alert(pipid);
 		var leadid = $('#EditLeadForm #lead_id').val();
 		// console.log(leadid);
+		if(confirm("Do you really want to delete this?")){
 		$.ajax({
                 type: "POST",
                 url: "<?php echo base_url();?>/Lead/update_lead_pipeline",
@@ -890,6 +900,7 @@ $(document).on('change','#movelead',function(){
                     toastr.error(error);
             }
         });
+	}
 
 });		
 
@@ -959,6 +970,10 @@ alert("gdf");
 		$(document).on('change','.category',function(){
 			var rowid = $(this).attr('data-ser');
 			var id =  $(this).val();
+			$('#row'+rowid+' #price').val('');
+			$('#row'+rowid+' #quantity').val('');
+			$('#row'+rowid+' #tax').val('');
+			$('#row'+rowid+' #amount').val('');
 			// alert(id);
         	// 
 			$.ajax({
@@ -967,12 +982,14 @@ alert("gdf");
 				url: "<?php echo base_url(); ?>/Lead/get_product_ac_category",
 				data: 'id='+id,
 				success: function(response){
+
 				// console.log(response.products);
 				$('#row'+rowid+' #product').html('');
 				$('#row'+rowid+' #product').html('<option value="">please select</option>');
 				jQuery.each(response.products, function(index, item) {
 				$('#row'+rowid+' #product').append('<option value="'+item.id+'">'+item.product_name+'</option>');
 			    });
+			
 			  },
 				error: function(jqXHR, text, error){
 					toastr.error(error);
@@ -995,8 +1012,14 @@ alert("gdf");
 				url: "<?php echo base_url(); ?>/Lead/get_data_ac_product",
 				data: 'id='+id,
 				success: function(response){
+					if(response.products_data == null){
+					$('#row'+rowid+' #price').val('');
+					$('#row'+rowid+' #quantity').val('');
+					$('#row'+rowid+' #tax').val('');
+					$('#row'+rowid+' #amount').val('');
+					}
+					else{
                     //  console.log(response.products_data.id);
-
 					// $('#unit').html(response.products_data.unit);
 					// $('#product_code').html(response.products.product_code);
 				    // $('#row'+rowid+' #product_name').val(response.products.product_name);
@@ -1004,6 +1027,7 @@ alert("gdf");
 					$('#row'+rowid+' #quantity').val(response.products_data.unit);
 					$('#row'+rowid+' #tax').val(response.products_data.total_tax);
 					$('#row'+rowid+' #amount').val(response.products_data.amount);
+					}
 					// $('#unit_price').html(response.products.unit_price);
 					// $('#total_tax').html(response.products.total_tax);
 
@@ -1041,9 +1065,7 @@ alert("gdf");
     });
 </script>
 
-
 <!---------add leads product form using ajax------------->
-
 <script>
 $(document).ready(function() {
 		// $('.comment-block').scrollTop($('.comment-block').height());
@@ -1094,7 +1116,6 @@ $(document).ready(function() {
 		});
 	});
 </script>
-
 
 <!---------add chat using ajax-------->
 <script type="text/javascript">
@@ -1181,6 +1202,7 @@ $(document).ready(function() {
 			data:'lead_id='+lead_id+'&status='+ status,
 			success: function(data){
 				toastr.success(data);
+				location.reload();
             }, 
 			error: function (jqXHR, text, error) {
                  toastr.error(error);
@@ -1207,6 +1229,7 @@ $(document).ready(function() {
 			data:'lead_id='+lead_id+'&status='+ status,
 			success: function(data){
 				toastr.error(data);
+				location.reload();
             }, 
 			error: function (jqXHR, text, error) {
                  toastr.error(error);
@@ -1282,9 +1305,7 @@ TreeData(tree, "#tree");
     });
 </script>
 
-
 <!------this function is used to show lead follow up -------->
-
 <script>
     $(document).ready(function(){
         follow_up_fetchdata();
@@ -1331,8 +1352,6 @@ TreeData(tree, "#tree");
         }
     });
 </script>
-
-
 
 <!---------update lead form using ajax-------->
 <script type="text/javascript">

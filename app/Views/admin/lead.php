@@ -29,7 +29,16 @@ echo view('cpanel-layout/navbar');
 									</a>
 									<div class="d-flex align-items-center flex-grow-1 flex-lg-grow-0">
 										<!-- <button class="btn btn-soft-primary flex-shrink-0 btn-add-newlist me-4 ms-4" data-bs-toggle="modal" data-bs-target="#add_task_list">Create New</button> -->
+										<?php
+										$department = session()->get('department');
+										// $department_designation = session()->get('department_designation');
+										// echo $department;
+										if($department == 'Sales'){
+										?>
 										<button class="btn btn-soft-primary flex-shrink-0 btn-add-newlist me-4 ms-4" data-bs-toggle="modal" data-bs-target="#add_new_card">Add Lead</button>
+										<?php
+										}
+										?>
 									</div>
 										<!-- <div class="ms-3">
 											<div class="input-group">
@@ -47,9 +56,7 @@ echo view('cpanel-layout/navbar');
 								<select class="form-select d-xxl-none flex-1 mx-3">
 									<option selected="" value="1">Initial Stage</option>
 									<option value="2">COFC Stage</option>
-									<option value="3">To Do List</option>
-									<option value="4">Files</option>
-									<option value="5">Links</option>
+
 								</select>
 								<ul class="nav nav-pills nav-pills-rounded active-theme nav-light px-2 flex-shrink-0 d-xxl-flex d-none">
 									<li class="nav-item">
@@ -103,6 +110,7 @@ echo view('cpanel-layout/navbar');
 										<div id="tasklist_wrap" class="tasklist-wrap">
 											<?php foreach($pipeline->get()->getResult() as $key => $item){ ?>
 												<!--  -->
+												
 												<div class="card card-simple card-border tasklists">
 													<div class="card-header card-header-action">
 														<div class="tasklist-handle">
@@ -110,7 +118,8 @@ echo view('cpanel-layout/navbar');
 															<div class="card-action-wrap">
 															<?php
 																$db      = \Config\Database::connect();
-																$builder = $db->table('leads')->where('pipeline_id',$item->id)->where('stage',1);
+																$sess = session()->get('id');
+																$builder = $db->table('leads')->where('pipeline_id',$item->id)->where('stage',1)->where('user_id',$sess);
 																$count = $builder->countAllResults();
 																?>
 												
@@ -123,12 +132,16 @@ echo view('cpanel-layout/navbar');
 														<div id="i1" class="tasklist-cards-wrap">
 															<!--  -->
 															<?php foreach($leads as $key => $item2){
+																$user_id = session()->get('id');
+																// echo $user_id;
 																if($item->id == $item2->pipeline_id){ 
-																	?>
+																	if($item2->user_id == $user_id ){
+																?>
 																	
 																	<div class="card card-border card-simple tasklist-card">
 																		<div class="card-header card-header-action">
 																			<h6 class="fw-bold"><?= $item2->firstname;?></h6>
+																			<h6 class="fw-bold"><?= $item2->deal_title;?></h6>
 																			<h6 class="fw-bold"><?= $item2->deal_title;?></h6>
 
 																			<div class="card-action-wrap">
@@ -185,7 +198,7 @@ echo view('cpanel-layout/navbar');
 																</div>
 															</div>
 														</div>
-													<?php }}?>
+													<?php }}}?>
 
 
 												</div>
