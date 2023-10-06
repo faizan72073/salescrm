@@ -74,7 +74,58 @@ echo view('cpanel-layout/navbar');
                                      <?php
                                       }
                                      ?>
+
+                            <hr>
+
+                            <div class="row">
+                                <div class="col-md-2">
+                                <h6>Pipelines</h6>
                                 </div>
+
+                                <div class="col-md-2">
+                                <h6>Permissions</h6>
+                                </div>
+                            </div>
+                            &nbsp;
+                        <?php
+							//
+							foreach($pipelinedata->get()->getResult() as $key => $item){
+                            ?>
+                                <div class="form-group row">
+                                  <label class="col-sm-2 col-form-label"><?= $item->name ?></label>
+                                    <div class="col-sm-10">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <div class="form-group">
+                                                    <label class="switch">
+                                                        <div class="form-check form-switch mb-1">
+                                                           <?php 
+                                                            // echo $item->status;
+                                                            $db = \Config\Database::connect();
+									                         $builder = $db->table('pipeline_permissions');
+                                                             $builder->where('user_id',$userInfo->id);
+                                                             $builder->where('pipeline_id',$item->id);
+                                                             $permission_status = $builder->get()->getRow();
+                                                             @$status = $permission_status->status;
+                                                            //  echo $status; 
+                                                            //  foreach($permission_status as $value){  
+                                                            //     $status = $value->status;
+                                                            // //     echo $status; 
+                                                            //  }              
+                                                            ?>
+                                                             <input type="checkbox" class="form-check-input" name="pipeline_Access" id="pipeline_Access"  onchange="special_pipeline_access_flip('<?php echo $item->id;?>','<?php echo $userInfo->id ?>','<?php echo '0'?>')" switch="success" item="enable" <?= ($status == 1 ) ? 'checked' : ''; ?> />
+                                                             </div>
+                                                    </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                     </div>
+                                     <?php
+                                      }
+                                     ?>
+                                </div>
+                               
                             </div>
                          </div>
                     </div>
@@ -129,4 +180,19 @@ echo view('cpanel-layout/footer');
 </script>
 
 
-
+<script>
+	function special_pipeline_access_flip(pipeline,user_id,oper) {
+            // alert(oper);
+            //
+			$.ajax({
+				type: "POST",
+				url: "<?php echo base_url();?>/User/special_pipeline_access_flip",
+				data:'pipeline='+pipeline+'&user_id='+user_id+'&oper='+oper,
+				success: function(data){
+					// for get return data
+					// toastr.success(data);
+				}
+				
+			});
+		}
+</script>

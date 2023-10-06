@@ -81,4 +81,17 @@ class Model_Users extends Model {
 		return $query;
 	}
 
+
+	function special_pipeline_access_detail($pipeline,$id){
+		$db = \Config\Database::connect();
+		//
+		$builder = $db->table('pipeline_permissions');
+		// d($builder);
+		// die();
+		$builder->where('user_id',$id);
+		$builder->where('pipeline_id',$pipeline);
+		$query = $builder->get();
+		return $query;
+	}
+
 }

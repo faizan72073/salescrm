@@ -37,7 +37,7 @@ class User extends BaseController
 		if(isLoggedIn() && $sess_status == 'admin'){
 
 			$userModel = new Model_Users();
-			$query=$userModel->get_users(null,null,null,['admin','user']);
+			$query=$userModel->get_users(null,null,null,['admin','user','hod']);
 		//
 			$ser=0;
 			foreach ($query->get()->getResult() as $value) {
@@ -704,9 +704,12 @@ class User extends BaseController
 		$uri = new \CodeIgniter\HTTP\URI(current_url());
 		//
 		$users = new Model_Users();
+		$pipelineModel = new Model_Pipeline();
 
 		$data['userInfo'] = $users->get_users($id)->get()->getRow();
 		$data['data2'] = $users->special_access();
+		$data['pipelinedata'] = $pipelineModel->get_pipeline();
+
 		
 		$data['modelUser'] = new Model_Users();
 		$data['id'] = $uri->getSegment(3);
@@ -752,6 +755,65 @@ class User extends BaseController
 
 		);
 		$this->db->table('special_permission_allow')->insert($data2);
+	}
+
+	}
+
+	public function special_access_pipeline($id){	
+		$sess_status = session()->get('status');
+		$uri = new \CodeIgniter\HTTP\URI(current_url());
+		//
+		$users = new Model_Users();
+
+		$data['userInfo'] = $users->get_users($id)->get()->getRow();
+		$data['data2'] = $users->special_access();
+		
+		$data['modelUser'] = new Model_Users();
+		$data['id'] = $uri->getSegment(3);
+
+		// dd($data['data2']);
+		
+		return view('admin/user_special_access',$data);
+	}
+
+
+	
+	public function special_pipeline_access_flip(){
+
+		$pipeline = $this->input->getPost('pipeline');
+		$user_id = $this->input->getPost('user_id');
+		$oper = $this->input->getPost('oper');
+		// return $oper;
+		// $data = $this->db->table('special_permission_allow')->where('sp_id',$oper)->select('status');
+		// dd($data);
+		$modelUser = new Model_Users();
+		$row = $modelUser->special_pipeline_access_detail($pipeline,$user_id)->getRow();
+		if($row != ''){
+		// dd($row);
+		//
+		$value = $row->status;
+		if($value == 0){
+			$oper = 1;
+		}
+		else{
+			$oper = 0;
+		}
+		$data = array(
+			'status' => $oper,
+		);
+		$this->db->table('pipeline_permissions')->where('pipeline_id',$pipeline)->where('user_id',$user_id)->update($data);
+
+	}
+
+	else{
+		$data2 = array(
+
+			'user_id' => $user_id,
+			'pipeline_id' => $pipeline,
+			'status' => 1,
+
+		);
+		$this->db->table('pipeline_permissions')->insert($data2);
 	}
 
 	}

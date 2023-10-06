@@ -39,6 +39,14 @@ echo view('cpanel-layout/navbar');
 										<?php
 										}
 										?>
+										<?php
+										// if(special_pipeline_access('SALES DEPARTMENT')){
+										?>
+										<!-- <h1>hello</h1> -->
+
+										<?php
+										// }
+										?>
 									</div>
 										<!-- <div class="ms-3">
 											<div class="input-group">
@@ -108,9 +116,15 @@ echo view('cpanel-layout/navbar');
 								<div>
 									<div id="kb_scroll" class="tasklist-scroll position-relative">
 										<div id="tasklist_wrap" class="tasklist-wrap">
-											<?php foreach($pipeline->get()->getResult() as $key => $item){ ?>
-												<!--  -->
+											<?php 
+											// if(special_pipeline_access('SALES DEPARTMENT')){
+                                            //     $access = 'yes';
+											// 	echo $access;											}
+											foreach($pipeline->get()->getResult() as $key => $item){ 
+												if(special_pipeline_access($item->name)){
+											?>
 												
+												<!--  -->
 												<div class="card card-simple card-border tasklists">
 													<div class="card-header card-header-action">
 														<div class="tasklist-handle">
@@ -131,11 +145,17 @@ echo view('cpanel-layout/navbar');
 													<div data-simplebar class="card-body">
 														<div id="i1" class="tasklist-cards-wrap">
 															<!--  -->
-															<?php foreach($leads as $key => $item2){
-																$user_id = session()->get('id');
+															<?php
+															$user_id = session()->get('id');
+															$department = session()->get('department');
+															$department_status = session()->get('status');
+															// echo $department_status;
+															foreach($leads as $key => $item2){
+																
 																// echo $user_id;
 																if($item->id == $item2->pipeline_id){ 
-																	if($item2->user_id == $user_id ){
+																//    if($department == 'Sales' && $department_status == 'hod'){
+																  if($item2->user_id == $user_id ){
 																?>
 																	
 																	<div class="card card-border card-simple tasklist-card">
@@ -205,7 +225,7 @@ echo view('cpanel-layout/navbar');
 											</div>
 										</div>
 										<!--  -->
-									<?php } ?>
+									<?php }} ?>
 								</div>
 							</div>
 						</div>

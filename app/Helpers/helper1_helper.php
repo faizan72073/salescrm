@@ -172,5 +172,32 @@ function special_access($module=null,$uid=null){
 	}
 }
 
+function special_pipeline_access($pipeline=null,$uid=null){
+	$db = \Config\Database::connect();
+	//
+	if(empty($uid)){
+		$uid = session()->get('id');	
+	}
+	//
+	$builder = $db->table('pipeline as pipeline');
+	$builder->join('pipeline_permissions as pipe_permission','pipeline.id = pipe_permission.pipeline_id');
+	$builder->where('pipe_permission.user_id',$uid);
+
+	if(!empty($pipeline)){
+
+	$builder->where('pipeline.name',$pipeline);
+	}
+
+	$builder->where('pipe_permission.status',1);
+	$query = $builder->get();
+	// dd($query);
+	//
+	if(count($query->getResultArray())  > 0){
+		return true;
+	}else{
+		return false;
+	}
+}
+
 
 ?>
