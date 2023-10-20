@@ -201,7 +201,27 @@ class Tools extends BaseController
 	
 	}
 
-	
+	public function show_message(){
+
+		$rem_id = $this->input->getPost('rem_id');
+		$error = null;
+		$user_id = session()->get('id');
+		//
+		if(empty($error)){
+
+			// $data['reminder_message'] = $this->db->table('reminder')->select();
+			// $response = json_encode($data);
+			// return $response;
+			$Model_Notification = new Model_Notifications();
+		    $data['reminders'] = $Model_Notification->getReminderById($rem_id);
+			return json_encode($data);
+		}
+
+		else{
+			return $this->response->setStatusCode(500,$error);
+		}
+
+	}
 	//
 	// public function markReadAll()
 	// {

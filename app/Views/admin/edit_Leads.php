@@ -3,6 +3,11 @@
 echo view('cpanel-layout/header');
 echo view('cpanel-layout/navbar');
 ?>
+<style>
+#tab_timeline ul{
+	padding-left: 0;
+}
+</style>
 <body>
 	<!-- Wrapper -->
 	<div class="hk-wrapper hk-pg-auth" data-layout="navbar" data-menu="light" data-footer="simple">
@@ -561,19 +566,18 @@ echo view('cpanel-layout/navbar');
 									<!-----------follow up end--------->
 
 									<div class="tab-pane" id="tab_comments">
-										<div class="comment-block" style="max-height:300px;overflow-y:auto;">
-										  <div id="chats" >
+										<div class="comment-block" style="min-height: calc(100vh - 350px);max-height: calc(100vh - 350px);overflow-y:auto;">
+										  	<div id="chats" >
 
-										  </div>
-									 </div>
-
-											<form id="addChatForm" class="position-relative">
-												<input type="hidden" name="lead_id" id="lead_id" value="<?php echo $leads->id ?>">
-												<div class="input-group mt-3 mb-3">
-													<textarea class="form-control" aria-label="With textarea" rows="1" placeholder="Add Comment" name="chat_text"></textarea>
-													<button type="submit" class="btn btn-primary input-group-text"><i class="fa fa-paper-plane"></i> </button>
-												</div>
-											</form>
+										  	</div>
+									 	</div>
+										<form id="addChatForm" class="position-relative">
+											<input type="hidden" name="lead_id" id="lead_id" value="<?php echo $leads->id ?>">
+											<div class="input-group mt-3 mb-3" style="position: fixed;bottom: 40px;width: 96%">
+												<textarea class="form-control" aria-label="With textarea" rows="1" placeholder="Add Comment" name="chat_text"></textarea>
+												<button type="submit" class="btn btn-primary input-group-text"><i class="fa fa-paper-plane"></i> </button>
+											</div>
+										</form>
 										</div>
 
 										<!----------- comment end--------->
@@ -1245,6 +1249,7 @@ $(document).ready(function() {
 <script>
 
 var lead_timeline_data = <?php echo json_encode($timeline); ?>;
+console.log(<?php echo json_encode($timeline); ?>);
 //
 var tree = {
 <?php

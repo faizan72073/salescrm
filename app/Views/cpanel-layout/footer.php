@@ -1,5 +1,21 @@
 <!------------ whole site javascript & jquery links here -------------------------->
 
+<style>
+	#viewMessage{
+		display: none;
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: #fff;
+		padding: 20px;
+	}
+	.modal.fade.zoom:not(.show) .modal-dialog {
+		transform: scale(0.8);
+	}
+
+</style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
 
@@ -125,35 +141,45 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
 
-<!-- sample modal content -->
-<div id="ViewReminderModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+
+<div id="ViewReminderModal" class="modal fade zoom" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title mt-0" id="myModalLabel">Reminder List</h5>
-                <!-- <span style="font-size:22px; cursor:pointer; color:black;" class="" id="closecontactupdatemodal">x</span> -->
-                <button class="btn btn-primary markallread" value="1" id="markallread">Mark All As Read</button>
+                <h5 class="modal-title mt-0" id="myModalLabel">Notification</h5>
+				<!-- <span style="font-size:22px; cursor:pointer; color:black;" class="" id="closemodal" data-bs-dismiss="modal">x</span> -->
+                <button class="btn btn-primary markallread btn-sm" value="1" id="markallread">Mark All As Read</button>
             </div>
-            <div class="table-responsive">
-                                        <table id="table1" class="table nowrap w-100 mb-5 remindertable">
-                                            <thead>
-                                                <tr>
-                                                    <th>#</th>
-                                                    <th>Title</th>
-                                                    <th>Name</th>
-                                                    <th>Message</th>
-                                                    <th>Action</th>
-                                                    
-                                                </tr>
-                                            </thead>
-                                            <tbody id="reminderlist">
-                              
-                                            </tbody>
-                                        </table>
-                                    </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+			<div class="modal-body">
+				
+					<table id="table1" class="table table-hover remindertable">
+						<thead>
+							<tr>
+								<td>#</td>
+								<td>From</td>
+								<td>To</td>
+								<td>Subject</td>
+								<td>Action</td>
+							</tr>
+						</thead>
+						<tbody id="reminderlist" style="max-height: 80vh;">
+
+						</tbody>
+
+					</table>
+				<div id="viewMessage">
+					<div class="d-flex align-items-center justify-content-between mb-3">
+						<a href="javascript:void(0)" class="markRead" onclick="goBack()">&lt; Back</a>
+						<a href="javascript:void(0)" onclick="goBack()" class="btn btn-xs btn-primary markRead">Mark as Read</a>
+					</div>
+					<hr>
+					<h5 class="text-center">Message</h5>
+                    <span class="text-center" id="message_text"></span>
+				</div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <script type="text/javascript">
@@ -180,8 +206,9 @@
                 //
                 var sno = index+1;
                 //
-                 html += '<tr><td>'+sno+'</td> <td>'+value.title+'</td> <td>'+value.firstname+'</td> <td>'+value.text+'</td> <td> <button  style="font-size:7px;"class="btn btn-primary btn-sm markRead" id="markRead" value="'+value.rem_id+'" id="markread">Mark As Read</button></td></tr>';
-                //
+                //  html += '<tr><td>'+sno+'</td> <td>'+value.title+'</td> <td>'+value.firstname+'</td> <td>'+value.text+'</td> <td> <button  style="font-size:7px;"class="btn btn-primary btn-sm markRead" id="markRead" value="'+value.rem_id+'" id="markread">Mark As Read</button></td></tr>';
+                 html += '<tr><td>'+sno+'</td> <td>'+value.title+'</td> <td>'+value.firstname+'</td> <td>'+value.text+'</td> <td><button data-rem_id='+value.rem_id+' href="javascript:void(0)" class="btn btn-primary btn-xs me-1 view_message" onclick="viewMessage()">View</button> <button class="btn btn-secondary btn-xs markRead" id="markRead" value="'+value.rem_id+'" id="markread">Mark As Read</button></td></tr>';
+                 //
             });
             $('.remindertable #reminderlist').html(html);
             }
@@ -189,7 +216,34 @@
 
 	});
 }
+</script>
 
+<script>
+    $(document).on('click', '.view_message', function () {
+        // var val = $('#markRead').val();
+        // alert("fsd");
+		// var val = $('#view_msg').attr('data-rem_id');
+        var val = $(this).attr('data-rem_id');
+        // alert(val);
+        $.ajax({
+            type: "POST",
+            url: "<?php echo base_url(); ?>/Tools/show_message",
+            data: 'rem_id='+val,
+            dataType: 'json',
+            success: function (response){
+
+                console.log(response.reminders.text);
+                $("#message_text").html(response.reminders.text);
+				// toastr.success(response);
+				// toastr.success(data);
+				// location.reload();
+            },
+            error: function (jqXHR, text, error) {
+                // Displaying if there are any errors
+				toastr.error(error);
+            }
+        });
+    });
 </script>
 
 <script>
@@ -276,6 +330,14 @@ setInterval(function(){ checkNewReminder(); }, 10000);
     });
 </script>
 
+<script>
+	function viewMessage() {
+		$('#viewMessage').css('display', 'block');
+	}
+	function goBack() {
+		$('#viewMessage').css('display', 'none');
+	}
+</script>
 
 </body>
 </html>

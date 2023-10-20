@@ -28,6 +28,9 @@ class Lead extends BaseController
 	public function index()
 	{
 		$sess_status = session()->get('status');
+		$user_id = session()->get('id');
+		$department = session()->get('department');
+		$department_status = session()->get('status');
 
 		if(isLoggedIn() && access_crud('Leads','view')){
 
@@ -39,7 +42,12 @@ class Lead extends BaseController
 			//
 			$data['pipeline'] = $pipelineModel->get_pipeline()->orderBy('p_order');
 			$data['pipeline2'] = $pipelineModel->get_pipeline()->orderBy('p_order');
+			if($department == 'Sales' && $department_status == 'hod'){
 			$data['leads'] = $LeadsModel->get_Leads()->where('stage',1)->get()->getResult();
+			}
+			else{
+				$data['leads'] = $LeadsModel->get_Leads()->where('stage',1)->where('user_id',$user_id)->get()->getResult();
+			}
 			// dd($data['leads']);
 			$data['Feasibility'] = $modelFeasibility->get_Feasibility();
 			$data['country'] = $tool->get_country();
@@ -88,13 +96,18 @@ class Lead extends BaseController
 		$data['timeline'] = array();
 		//
 		$data['lead_timeline'] = $LeadTimeline->get_Lead_Timeline(null,$id)->orderBy('datetime')->get()->getResult();
+		
 		//
         foreach($data['lead_timeline'] as $item){
 			$pipelinedetail = $pipelineModel->get_pipeline($item->pipeline_id)->get()->getRow();
 			$getname = $pipelinedetail->name;
 			$getdatetime = $item->datetime;
 			array_push($data['timeline'],$getname,$getdatetime);  
+			// print_r($data['timeline']);
+		
 		}
+
+		// die();
 		// $data['department_name'] = $pipelineModel->get_pipeline()->where('id',1)->get()->getResult();
 		// dd($department_name);
 		// $names = $department_name->name;

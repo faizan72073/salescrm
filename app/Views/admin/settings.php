@@ -1580,7 +1580,7 @@ function company_fetchdata(){
 
 <script>
 
-    $(document).ready(function(){
+$(document).ready(function(){
    // $('#country').change(function(){
         $(document).on('change','#country',function(){
             var id = $(this).val();

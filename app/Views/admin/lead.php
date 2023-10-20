@@ -151,19 +151,17 @@ echo view('cpanel-layout/navbar');
 															$department_status = session()->get('status');
 															// echo $department_status;
 															foreach($leads as $key => $item2){
-																
 																// echo $user_id;
 																if($item->id == $item2->pipeline_id){ 
-																//    if($department == 'Sales' && $department_status == 'hod'){
-																  if($item2->user_id == $user_id ){
+
 																?>
 																	
 																	<div class="card card-border card-simple tasklist-card">
 																		<div class="card-header card-header-action">
-																			<h6 class="fw-bold"><?= $item2->firstname;?></h6>
-																			<h6 class="fw-bold"><?= $item2->deal_title;?></h6>
-																			<h6 class="fw-bold"><?= $item2->deal_title;?></h6>
-
+																			<div>
+																				<h6 class="fw-bold"><?= $item2->firstname;?></h6>
+																				<h6 class="fw-bold"><?= $item2->deal_title;?></h6>
+																			</div>
 																			<div class="card-action-wrap">
 																				<a class="btn btn-xs btn-icon btn-flush-dark btn-rounded flush-soft-hover dropdown-toggle no-caret" href="#" data-bs-toggle="dropdown"><span class="icon"><span class="feather-icon"><i data-feather="more-vertical"></i></span></span></a>
 																				<div class="dropdown-menu dropdown-menu-end">
@@ -218,7 +216,7 @@ echo view('cpanel-layout/navbar');
 																</div>
 															</div>
 														</div>
-													<?php }}}?>
+													<?php }}?>
 
 
 												</div>
