@@ -146,9 +146,7 @@ echo view('cpanel-layout/navbar');
 														<div id="i1" class="tasklist-cards-wrap">
 															<!--  -->
 															<?php
-															$user_id = session()->get('id');
-															$department = session()->get('department');
-															$department_status = session()->get('status');
+															
 															// echo $department_status;
 															foreach($leads as $key => $item2){
 																// echo $user_id;

@@ -46,7 +46,7 @@ class Lead extends BaseController
 			$data['leads'] = $LeadsModel->get_Leads()->where('stage',1)->get()->getResult();
 			}
 			else{
-				$data['leads'] = $LeadsModel->get_Leads()->where('stage',1)->where('user_id',$user_id)->get()->getResult();
+				$data['leads'] = $LeadsModel->get_Leads()->where('stage',1)->get()->getResult();
 			}
 			// dd($data['leads']);
 			$data['Feasibility'] = $modelFeasibility->get_Feasibility();
@@ -265,6 +265,7 @@ class Lead extends BaseController
 		$error = null;
 		$lead_id = $this->input->getPost("lead_id");
 		$sess_status = session()->get('status');
+		$user_id = session()->get('id');
 		//
 		$follow_up_date = $this->input->getPost("follow_up_date");
 		$follow_up_time = $this->input->getPost("follow_up_time");
@@ -305,7 +306,7 @@ class Lead extends BaseController
 			$this->db->transStart();
 			//
 				$data = [
-
+                    'user_id' => $user_id,
 					'lead_id' => $lead_id,
 					'follow_up_date' => $follow_up_date,
 					'follow_up_time' => $follow_up_time,
@@ -614,6 +615,7 @@ class Lead extends BaseController
 			if (!empty($_POST["follow_up_date"] && $_POST["follow_up_time"] && $_POST["firstname"] && $_POST["lastname"] && $_POST["email_address"] && $_POST["template"] && $_POST["email_template"])) {
 				//
 				$data4 = array(
+					'user_id' => $id,
 					'follow_up_date' => $follow_up_date,
 					'follow_up_time' => $follow_up_time,
 					'firstname' => $firstname,
@@ -779,6 +781,7 @@ class Lead extends BaseController
 
 		$error = null;
 		$sess_status = session()->get('status');
+		$user_id = session()->get('id');
 		$follow_up_date = $this->input->getPost("follow_up_date");
 		$follow_up_time = $this->input->getPost("follow_up_time");
 		$firstname = $this->input->getPost("firstname");
@@ -814,7 +817,7 @@ class Lead extends BaseController
 		//
 		if (empty($error)) {
 			$data = [
-
+				'user_id' => $user_id,
 				'follow_up_date' => $follow_up_date,
 				'follow_up_time' => $follow_up_time,
 				'firstname' => $firstname,
@@ -1002,7 +1005,8 @@ class Lead extends BaseController
 
 		$id = $this->input->getPOst('id');
 		$sess_status = session()->get('status');
-		if(isLoggedIn() && $sess_status == 'admin'){
+		$user_id = session()->get('id');
+		if(isLoggedIn()){
 
 			$Remindermodel = new Model_Reminder();
 			$query=$Remindermodel->get_reminder()->where('lead_id',$id);
@@ -1074,10 +1078,19 @@ public function show_follow_up(){
 
 	$id = $this->input->getPOst('id');
 	$sess_status = session()->get('status');
-	if(isLoggedIn() && $sess_status == 'admin'){
+	$user_id = session()->get('id');
+	if(isLoggedIn()){
 
 		$Followupmodel = new Model_Followup();
-		$query=$Followupmodel->get_follow_up()->where('lead_id',$id);
+
+		if($sess_status == 'admin'){
+
+			$query=$Followupmodel->get_follow_up()->where('lead_id',$id);
+		}
+		else{
+			$query=$Followupmodel->get_follow_up()->where('lead_id',$id)->where('user_id', $user_id);
+		}
+		
 	//
 		$ser=0;
 		foreach ($query->get()->getResult() as $value) {

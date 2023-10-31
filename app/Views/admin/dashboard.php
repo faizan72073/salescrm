@@ -69,7 +69,7 @@ echo view('cpanel-layout/navbar');
                 <h5 class="modal-title mt-0" id="myModalLabel">Notification</h5>
 				<!-- <span style="font-size:22px; cursor:pointer; color:black;" class="" id="closemodal" data-bs-dismiss="modal">x</span> -->
             </div>
-			<div class="modal-body">
+			<!-- <div class="modal-body">
 				<form id="adduserform" class="form-horizontal form-label-left input_mask">
 					<table class="table table-hover" >
 						<thead>
@@ -226,7 +226,7 @@ echo view('cpanel-layout/navbar');
 					<hr>
 					<h5 class="text-center">This is message content here</h5>
 				</div>
-            </div>
+            </div> -->
         </div>
     </div>
 </div>
@@ -235,7 +235,7 @@ echo view('cpanel-layout/navbar');
 echo view('cpanel-layout/footer');
 // echo view('popup/popup');
 ?>
-<script>
+<!-- <script>
 	$(function() {
 		$('#popupModel').modal('hide');
 
@@ -248,7 +248,7 @@ echo view('cpanel-layout/footer');
 	}
 
 	
-</script>
+</script> -->
 
 </body>
 </html>
