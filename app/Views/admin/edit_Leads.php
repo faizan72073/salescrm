@@ -371,102 +371,178 @@ echo view('cpanel-layout/navbar');
 
 										<div class="tab-pane fade" id="tab_reminder">
 										
-											<form id="EditReminderForm" class="form-horizontal form-label-left input_mask">
-											<input type="hidden" name="lead_id" value="<?php echo $leads->id ?>">
+											<!-- <form id="EditReminderForm" class="form-horizontal form-label-left input_mask"> -->
+											<!-- <input type="hidden" name="lead_id" value="<?php echo $leads->id ?>"> -->
 											<div class="modal-body">
 
 											<div class="table-responsive">
-												<table id="table1" class="table nowrap w-100 mb-5">
-													<thead>
-														<tr>
-															<th>#</th>
-															<th>Title</th>
-															<th>Date</th>
-															<th>Time</th>
-															<th>Assigned to</th>
-															<th>Description</th>
-															<th>Action</th>
-														</tr>
-													</thead>
-													<tbody id="tbody1">
-													</tbody>
-												</table>
-											</div>
+											<div class="card shadow mb-4 border-left-secondary">
+											<!-- <div class="card-header py-3">
+												<h6 class="m-0 font-weight-bold text-primary" style="float:left;">All Notifications</h6>
+											</div> -->
+											<div class="card-body">
 
-												<div class="row gx-3">
-												<div class="col-md-12">
-												           <label for="call">Select Reminder Type:</label>
-														   <?php
-														   @$reminder_t = $reminder->reminder_type;
+												<ul class="nav nav-tabs" id="myTab" role="tablist">
+												<li class="nav-item" role="presentation">
+														<a class="nav-link tabclick active" id="issued" data-bs-toggle="tab" href="#tab2" role="tab" aria-controls="Isstable" aria-selected="false">Inbox</a>
+													</li>
 
-														   ?>
-														<div class="form-group">
-															<input type="radio" id="call" name="reminder_type" value="call" <?php echo (@$reminder_t == 'call' ) ? 'checked' : ''; ?>>
-															<label for="call">Call</label>
+													<li class="nav-item" role="presentation">
+														<a class="nav-link tabclick" id="requested" data-bs-toggle="tab" href="#tab1" role="tab" aria-controls="Reqtable" aria-selected="true">Outbox</a>
+													</li>
+												</ul>
+															<div class="tab-content" id="myTabContent">
+																<div class="tab-pane fade show" id="tab1" role="tabpanel" aria-labelledby="requested">
+																	<div class="table-responsive">
+																		<table id="Isstable" class="table table-striped table-bordered">
+																			<thead>
+																				<tr>
+																					<th class="text-center">#</th>
+																					<th class="">Title</th>
+																					<th class="text-center">Date</th>
+																					<th class="text-center">Time</th>
+																					<th style="width:200px;" class="text-center">Action</th>
+																				</tr>
+																			</thead>
+																			<tbody>
+																				<?php if (count($myreminderlist) > 0): ?>
+																					<?php foreach ($myreminderlist as $key => $value): ?>
+																					
+																						<tr>
+																							<td class="text-center"><?php echo $key+1; ?></td>
+																							<td><?php echo $value->title;?></td>
+																							<td class="text-center"><?php echo $value->remind_date;?></td>
+																							<td class="text-center"><?php echo date("g:i a", strtotime($value->time));?></td>
+																							<td class="text-center">
+																								<?php 
+																								$dateTimeStored = $value->remind_date.' '.$value->time;
+																								$date = strtotime($dateTimeStored);
+																								$current = strtotime(date('Y-m-d H:i:s'));
+																								?>
+																								<span class="badge badge-soft-danger"></span>
+																								<button class="btn btn-primary btn-sm ViewReminderDetail"  data-rem_id="<?php echo $value->rem_id?>"><i class="fa fa-info"></i></button>
+																								<?php if ($date > $current && $value->user_id == session()->get('id')): 
 
-															<input type="radio" id="Meeting" name="reminder_type" value="Meeting" <?php echo (@$reminder_t == 'Meeting' ) ? 'checked' : ''; ?>>
-															<label for="Meeting">Meeting</label>
+																									// echo '<script>
+																									// function autoRefresh() {
+																									// 	window.location = window.location.href;
+																									// }
+																									// setInterval("autoRefresh()", 2000);
+																									// </script>';
+																									// $numOfSeconds = $starttime - $current;
+																								?>
+																								<!-- <p id="demo2"></p> -->
 
-															<input type="radio" id="Task" name="reminder_type" value="Task" <?php echo (@$reminder_t == 'Task' ) ? 'checked' : ''; ?>>
-															<label for="Task">Task</label>
 
-															<input type="radio" id="Deadline" name="reminder_type" value="Deadline" <?php echo (@$reminder_t == 'Deadline' ) ? 'checked' : ''; ?>>
-															<label for="Deadline">Deadline</label>
+																								<!-- <p id="timer"></p> -->
+																								<button class="btn btn-danger btn-sm" onclick="deleteid('<?php echo $value->rem_id?>')"><i class="fa fa-trash"></i></button>
+																								<!-- <a  class="text-danger" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete"><i class="fa fa-trash-alt"></i></a> -->
+																							<?php endif ?>
+																						</td>
+																					</tr>
+																				<?php endforeach ?>
+																				<?php endif ?>
+																			</tbody>
+																		</table>
+																	</div>
+																</div>
+													<div class="tab-pane fade show active" id="tab2" role="tabpanel" aria-labelledby="issued">
+														<div class="table-responsive">
+															<table id="Reqtable" class="table table-striped table-bordered">
+																<thead>
+																	<tr>
+																		<th class="text-center">#</th>
+																		<th class="text-center">From</th>
+																		<th class="">Title</th>
+																		<th class="text-center">Date</th>
+																		<th class="text-center">Time</th>
+																		<th style="width:200px;" class="text-center">Action</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	<!--  --><?php if (count($reminderlistforme) > 0){ ?>
+																		<?php foreach ($reminderlistforme as $key => $value){ ?>
+																		<?php
+																		foreach ($all_users as $key2 => $value2){ 
+																			if($value->user_id == $value2->id){
+																				$name = $value2->username;
+																			?>
+																			<tr>
+																				<td class="text-center"><?php echo $key+1; ?></td>
+																				<td class="text-center"><?php echo $name ?></td>
+																				<td><?php echo $value->title;?></td>
+																				<td class="text-center"><?php echo $value->remind_date;?></td>
+																				<td class="text-center"><?php echo date("g:i a", strtotime($value->time));?></td>
+																				<td class="text-center">
+																					<?php
+																					if($value->status == 0){
+						
+																					?>
+																					<span class="badge badge-soft-primary">New</span>
 
-															<input type="radio" id="Email" name="reminder_type" value="Email" <?php echo (@$reminder_t == 'Email' ) ? 'checked' : ''; ?>>
-															<label for="Email">Email</label>
-
-															<input type="radio" id="Lunch" name="reminder_type" value="Lunch" <?php echo (@$reminder_t == 'Lunch' ) ? 'checked' : ''; ?>>
-															<label for="Lunch">Lunch</label>
+																					<?php
+																					}
+																					?>
+																					<button class="btn btn-primary btn-sm ViewReminderDetailForMe" data-my_reminder="0" data-rem_id="<?php echo $value->rem_id?>"><i class="fa fa-info"></i></button>
+																				
+																				</td>
+																			</tr>
+																			<?php } ?>
+																		<?php } ?>
+																	<?php } ?>
+																	<?php } ?>
+																</tbody>
+															</table>
+														</div>
 													</div>
 												</div>
-
-													<div class="col-sm-6">
-														<div class="form-group">
-															
-															<label class="form-label">Ttile</label>
-															<input class="form-control task-name" value="<?= @$reminder->title ?>" placeholder="Title" name="title" id="exampleFormControlInput1" type="text" />
-														</div>
-													</div>
-													<div class="col-sm-6">
-														<div class="form-group">
-														<label class="form-label">Date</label>
-															<input class="form-control" value="<?= @$reminder->date ?>" name="date" min="2023-06-07" id="exampleFormControlInput1" type="date" />
-														</div>
-													</div>
-													<div class="col-sm-6">
-														<div class="form-group">
-														<label class="form-label">Time</label>
-															<input class="form-control" value="<?= @$reminder->time ?>" name="time" id="exampleFormControlInput1" type="time"/>
-														</div>
-													</div>
-
-													<div class="col-sm-6">
-														<div class="form-group">
-														    <label class="form-label">Assigned To</label>
-															<select class="form-control" name="assigned_to" id="exampleFormControlInput1">
-															<option value="">select</option>
-															<option value="faizan">faizan</option>
-															<option value="osman">osman</option>
-															</select>
-														</div>
-													</div>
-
-													<div class="col-md-12">
-														<div class="form-group">
-														   <label class="form-label">Description</label>
-															<textarea placeholder="Description" max="300" class="form-control" name="description" id="exampleFormControlInput1" rows="3"><?= @$reminder->description ?></textarea>
-														</div>
-													</div>
-												</div>
 											</div>
-											<div style="float:right;">
-												<!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button> -->
-												<button type="submit" class="btn btn-primary">save</button>
-											</div>
-										</form>
-									
+										</div>
+
 									</div>
+										<form id="myform" action="<?php echo base_url();?>/tools/set_reminder" method="POST">
+														<div class="form-group">
+															<label for="datetime">Reminder Date Time:</label>
+															<input type="datetime-local" name="reminderDate" id="" class="form-control" placeholder="Reminder Date Time" required>
+														</div>
+														<div class="form-group" id="reminder_for_group">
+														<label for="remind_for">Reminder For:</label>
+														<select name="remind_for[]" class="form-control js-example-basic-multiple" id="remind_for" multiple="multiple" required>
+															<?php if (count($all_users_result) > 0): ?>
+																<?php foreach ($all_users_result as $key => $user): ?>
+																	<option value="<?php echo $user->id ?>"><?php echo $user->username .' ('.$user->firstname.' '.$user->lastname.')' ?></option>
+																<?php endforeach ?>
+															<?php endif ?>
+														</select>
+														</div>
+														<div class="checkbox">
+															<label><input id="select_all_users" type="checkbox" name="select_all"> <i class="fa fa-broadcast-tower"></i> Broadcast</label>
+														</div>
+														<!-- <div class="form-group hide" id="except_users_group">
+														<label for="except_users">Except users if any:</label>
+														<select name="except_users[]" class="form-control js-example-basic-multiple" id="except_users" multiple="multiple" style="width:100%;">
+															<?php if (count($all_users_result) > 0): ?>
+																<?php foreach ($all_users_result as $key => $user): ?>
+																	<option value="<?php echo $user->id ?>"><?php echo $user->username .' ('.$user->firstname.' '.$user->lastname.')' ?></option>
+																<?php endforeach ?>
+															<?php endif ?>
+														</select>
+														</div> -->
+														<div class="form-group">
+															<label for="remindTitle">Title:</label>
+															<input id="remindTitle" type="text" name="title" class="form-control" placeholder="Reminder Title" required>
+														</div>
+														<div class="form-group">
+															<label for="ckEditor">Content:</label>
+															<textarea name="content" id="ckEditor" cols="30" rows="10"></textarea>
+														</div>
+														<div class="form-group">
+															<button type="submit" class="btn btn-primary"><i class="fa fa-bell"></i> Set Reminder</button>
+														</div>
+									</form>			
+								</div>
+
+							</div>
 
 									<!---------------reminder end------------>
 									<div class="tab-pane fade" id="tab_follow_up">
@@ -1493,3 +1569,174 @@ $(document).on('click','.editLeads',function(){
 
 });
 </script> -->
+
+<script src="https://cdn.ckeditor.com/ckeditor5/23.1.0/classic/ckeditor.js"></script>
+<script src="<?php echo base_url();?>/assets/js/flatpickr.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+	ClassicEditor
+	.create( document.querySelector( '#ckEditor' ) )
+	.catch( error => {
+		console.error( error );
+	} );
+
+	$('.js-example-basic-multiple').select2({
+			placeholder: 'Select User',
+			allowClear: true
+		});
+</script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		$("#myform").submit(function() {
+			var $this = $(this);
+			var dateTime = $('#datetime').val();
+			var remind_for = $('#remind_for').val();
+			var remindTitle = $.trim($('#remindTitle').val());
+			var select_all_users = $('#select_all_users');
+			var content = $.trim(CKEDITOR.instances.ckEditor.document.getBody().getChild(0).getText());
+
+			if (dateTime == '' || remindTitle == '' || content == '') {
+				alert('All fields are required');
+			} else {
+				
+				if(select_all_users.prop("checked") == false){
+				   if (remind_for == null) {
+					alert('All fields are required');
+				   } else {
+				   		// setReminder($this);
+				   		$this.submit();
+				   }
+				} else {
+			   		// setReminder($this);
+			   		$this.submit();
+				}
+			}
+			return false;
+		});
+
+		flatpickr("#datetime", {
+			enableTime: true,
+		    dateFormat: "Y-m-d H:i",
+		    minDate: "today"
+		});
+
+	});
+</script>
+
+<script>
+$('#select_all_users').click(function(){
+	
+            if($(this).prop("checked") == true){
+
+                $('#reminder_for_group').css({
+                	'pointer-events': 'none',
+                	'opacity': '0.5'
+					// 'display' : 'none'
+                });
+                $('#except_users_group').removeClass('hide');
+                $('#remind_for').val('');
+				$("#remind_for").prop('required',false);
+            }
+            else if($(this).prop("checked") == false){
+                $('#reminder_for_group').css({
+                	'pointer-events': 'unset',
+                	'opacity': '1'
+                });
+                $('#except_users_group').addClass('hide');
+                $('#remind_for').prop('required',true);
+            }
+        });
+</script>
+
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#Isstable').dataTable();
+		$('#Reqtable').dataTable();
+		// checkNewReminder();
+	});
+	function deleteid(val) {
+		if(confirm("Do you realy want to delete this?")){
+		$.ajax({
+			type: "POST",
+			url: "<?php echo base_url();?>/Tools/delete_reminder",
+			data:'rem_id='+val,
+			success: function(data){
+				// snack('#d9534f','Deleted Successfully','check-square-o');
+				toastr.success('Reminder Deleted Successfully');
+				setTimeout(function(){
+					location.reload();
+				}, 2000);
+
+			}
+		});
+	}
+	}
+</script>
+
+<script>
+    $(document).on('click', '.ViewReminderDetail', function () {
+        var val = $(this).attr('data-rem_id');
+        // alert(val);
+        $.ajax({
+			dataType: 'json',
+            type: "POST",
+            url: "<?php echo base_url(); ?>/Tools/getReminderById",
+            data: 'rem_id='+val,
+            success: function (res){
+				// alert(res.remindersUsers[0].firstname);
+				console.log(res.reminders);
+
+				$('#datetime').val(res.reminders.date+' '+res.reminders.time);
+				$('#for').html(res.remindersUsers[0].firstname);
+				$('#remindTitle').val(res.reminders.title);
+				$('#text').html(res.reminders.text);
+                $('#ViewReminderModel').modal('show');
+            },
+            error: function (jqXHR, text, error) {
+                // Displaying if there are any errors
+            }
+        });
+    });
+</script>
+
+<script>
+    $(document).on('click', '.ViewReminderDetailForMe', function () {
+        var val = $(this).attr('data-rem_id');
+        // alert(val);
+        $.ajax({
+			dataType: 'json',
+            type: "POST",
+            url: "<?php echo base_url(); ?>/Tools/getReminderById",
+            data: 'rem_id='+val,
+            success: function (res){
+				// alert(res.remindersUsers[0].firstname);
+
+				$('#datetime2').val(res.reminders.date+' '+res.reminders.time);
+				$('#from2').html(res.remindersUsers[0].firstname);
+				$('#remindTitle2').val(res.reminders.title);
+				$('#text2').html(res.reminders.text);
+                $('#ViewReminderModelForMe').modal('show');
+            },
+            error: function (jqXHR, text, error) {
+                // Displaying if there are any errors
+            }
+        });
+    });
+</script>
+
+<script>
+	$('#closeremindmodal').click(function() {
+		$('#ViewReminderModel').modal('hide');
+	});
+</script>
+
+<script>
+	$('#closeremindmodalforme').click(function() {
+		$('#ViewReminderModelForMe').modal('hide');
+	});
+</script>

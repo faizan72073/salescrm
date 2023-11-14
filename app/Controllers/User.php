@@ -817,6 +817,27 @@ class User extends BaseController
 	}
 
 	}
+
+	public function sales_user_data(){
+
+		$users = new Model_Users();
+		$data = $users->get_sales_user(62)->getResult();
+		// dd($data);
+		$row = count($data);
+		// dd($row);
+		// $data2 = $data->getResult();
+		// $row = count($data2);
+		// dd($data3);
+		for($i=0; $row > $i; $i++){
+
+			echo "<br>";
+			echo $data[$i]->username;
+			
+		}
+
+		// dd($data[0]->username);
+		
+	}
 	  
 
 }

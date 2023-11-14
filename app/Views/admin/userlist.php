@@ -9,6 +9,7 @@ echo view('cpanel-layout/navbar');
 
         <!-- Main Content -->
         <div class="hk-pg-wrapper">
+            
             <!-- Page Body -->
             <div class="hk-pg-body">
                 <!-- Container -->

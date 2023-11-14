@@ -13,6 +13,7 @@ use App\Models\Model_Setting;
 use App\Models\Model_Lead_Timeline;
 use App\Models\Model_Lead_Products;
 use App\Models\Model_Feasibility;
+use App\Models\Model_Notifications;
 
 
 class Lead extends BaseController
@@ -76,9 +77,19 @@ class Lead extends BaseController
 		$LeadTimeline = new Model_Lead_Timeline();
 		$tool = new Model_Tools();
 		$modelFeasibility = new Model_Feasibility();
+		$Model_Users = new Model_Users();
+		$Model_Notification = new Model_Notifications();
+		//
+		$all_users = $Model_Users->get_users();
+		$data['all_users_result'] = $all_users->get()->getResult();
 		//
 		$data['pipeline2'] = $pipelineModel->get_pipeline()->orderBy('p_order');
 		$data['leads'] = $LeadsModel->get_Leads($id)->get()->getRow();
+
+		$sess_id = session()->get('id');
+		$data['myreminderlist'] = $Model_Notification->get_all_reminder($sess_id);
+		$data['reminderlistforme'] = $Model_Notification->get_all_reminder();
+		$data['all_users'] = $Model_Users->get_users()->get()->getResult();
 
 		$data['country'] = $tool->get_country();
 		$data['state'] = $tool->get_state();

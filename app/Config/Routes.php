@@ -37,8 +37,10 @@ $routes->get('/pdf/(:num)', 'Tools::pdf/$1');
 //
 $routes->group('/', ['filter' => 'MaintenanceFilter'], static function ($routes) {
 
-    $routes->get('/login', 'Login::index');
-    $routes->get('/login/verify-otp', 'Login::otp_verification');
+$routes->get('/login', 'Login::index');
+$routes->get('/login/verify-otp', 'Login::otp_verification');
+
+$routes->get('/user-data', 'User::sales_user_data');
 
 });
 //

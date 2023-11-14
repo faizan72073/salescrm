@@ -1,5 +1,6 @@
-<?php namespace App\Models;
+<?php 
 
+namespace App\Models;
 use CodeIgniter\Model;
 
 class Model_Users extends Model {
@@ -26,6 +27,25 @@ class Model_Users extends Model {
 		}
 
 		return $builder;
+	}
+
+	function get_sales_user($u_id=null,$name=null, $email=null, $phone=null, $address=null) {
+
+	    // get all data of user according to user id
+		$sql = "CALL get_sales_user_data(?)";
+		$result = $this->db->query($sql,[$u_id]);
+		return $result;
+
+
+        // get all data of all users
+		// $sql = "CALL get_sales_user_data()";
+		// $result = $this->db->query($sql);
+		// return $result;
+		
+		// if($result) {
+		// 	return true;
+		// }
+		// return false;
 	}
 	// //
 	function submenu_list(){
