@@ -75,5 +75,6 @@
 
 </head>
 <body>
+	
 <!-- <div class="hk-wrapper hk-pg-auth" data-layout="navbar" data-menu="light" data-footer="simple"> -->
-	<div class="hk-wrapper" data-layout="navbar" data-layout-style="default" data-menu="light" data-footer="simple">
+<div class="hk-wrapper" data-layout="navbar" data-layout-style="default" data-menu="light" data-footer="simple">

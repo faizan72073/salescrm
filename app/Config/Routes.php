@@ -33,6 +33,8 @@ $routes->setAutoRoute(true);
 // route since we don't have to scan directories.
 $routes->get('/503', 'Settings::page_503');
 $routes->get('/forget', 'Login::forget');
+$routes->get('/otp', 'Login::otp');
+$routes->get('/change_password', 'Login::change_password');
 $routes->get('/pdf/(:num)', 'Tools::pdf/$1');
 //
 $routes->group('/', ['filter' => 'MaintenanceFilter'], static function ($routes) {
@@ -54,6 +56,7 @@ $routes->group('/', ['filter' => 'AuthFilter'], static function ($routes) {
     //
     $routes->get('/', 'Dashboard::index');
     $routes->get('', 'Dashboard::index');
+    $routes->get('/search', 'Search::search');
     $routes->get('/settings', 'Settings::index');
     $routes->get('/cpanel', 'Dashboard::index');
     $routes->get('/dashboard', 'Dashboard::index');

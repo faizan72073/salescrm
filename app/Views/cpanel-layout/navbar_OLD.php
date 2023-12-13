@@ -215,7 +215,7 @@ $db = db_connect();
 																	</ul>
 																</li>
 															<?php
-															} else if($menuValue2->has_submenu == 0 && parent_view($menuValue2->id)) {
+															} elseif ($menuValue2->has_submenu == 0 && parent_view($menuValue2->id)) {
 																$submenu_query = submenu($menuValue2->id);
 																foreach ($submenu_query->get()->getResult() as $submenuValue) {
 															?>
@@ -234,62 +234,36 @@ $db = db_connect();
 											</li>
 										</ul>
 									</li>
+
+									
+
+
 										<!---------new nav bar work----------------->
 										<?php 
-										$menu_query = menu();
-										  $count = 0; // Initialize the count variable outside the loop
-											foreach ($menu_query->get()->getResult() as $key => $menuValue3) {
-												if ($key > 3) {
-												if ($menuValue3->has_submenu == 1 && parent_view($menuValue3->id)) {
-													$submenu_query = submenu($menuValue3->id);
-											// Move the count assignment inside the condition		
-										?>
-										<!-- <li class="nav-item ">
+												$menu_query = menu();
+												$count = 0; // Initialize the count variable outside the loop
+
+												foreach ($menu_query->get()->getResult() as $key => $menuValue2) {
+													if ($key > 3) {
+														if (parent_view($menuValue2->id)) {
+															$count = $key;
+															// Move the count assignment inside the condition
+														
+											?>
+										<li class="nav-item d-sm-none">
+											
 											<a class="nav-link" href="" data-bs-toggle="collapse" data-bs-target="#dash_contact">
-												<span class="nav-link-text"></span>
+
+												<span class="nav-link-text"><?=$menuValue2->menu ?></span>
+
 											</a>
-										</li> -->
-										<li class="nav-item d-sm-none">
-											<a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#dash_blog<?=$key?>">
-												<span class="nav-link-text"><?=$menuValue3->menu ?></span>
-											</a>
-											<ul id="dash_blog<?=$key?>" class="nav flex-column collapse  nav-children">
-											<?php
-										    foreach ($submenu_query->get()->getResult() as $submenuValue) {
-											    if (access_crud($submenuValue->submenu, 'view')) {
-										    ?>
-												    <li class="nav-item">
-													    <ul class="nav flex-column">
-														    <li class="nav-item">
-															    <a class="nav-link" href="<?= $submenuValue->route ?>">
-																    <span class="nav-link-text"><?= $submenuValue->submenu ?></span>
-															    </a>
-														    </li>
-													    </ul>
-												    </li>
-										     <?php
-											    }
-											  }
-										    ?>
-										  </ul>	
 										</li>
 										<?php
+												}
 											}
-										else if($menuValue3->has_submenu == 0 && parent_view($menuValue3->id)) {
-										$submenu_query3 = submenu($menuValue3->id);
-										  foreach ($submenu_query3->get()->getResult() as $submenuValue3) {
-										?>
-										<li class="nav-item d-sm-none">
-										<a class="nav-link" href="<?= $submenuValue->route ?>" data-bs-target="#dash_contact">
-												<span class="nav-link-text"><?=$menuValue3->menu; ?></span>
-											</a>
-										</li>
-										<?php
-										  }
 										}
-									  }
-									}
-								   ?>
+										?>
+
 										<!-- <li class="nav-item">
 
 											<a class="nav-link" href="javascript:void(0);" data-bs-toggle="collapse" data-bs-target="#dash_task">
@@ -746,7 +720,7 @@ $db = db_connect();
 
 								<span class="input-affix-wrapper input-search affix-border">
 
-									<input type="text" name="search" class="form-control  bg-transparent"  data-navbar-search-close="false" placeholder="Search..." aria-label="Search" required autocomplete="off">
+									<input type="text" name="search" class="form-control  bg-transparent"  data-navbar-search-close="false" placeholder="Search..." aria-label="Search" required>
 
 									<span class="input-suffix"><span>/</span>
 
@@ -1291,6 +1265,7 @@ document.getElementById("demo").innerHTML = datetime;
 // }
 }
 </script> 
+
 
 <script type="text/javascript">
 	$(document).ready(function(){

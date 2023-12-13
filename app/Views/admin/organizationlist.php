@@ -13,7 +13,7 @@ echo view('cpanel-layout/navbar');
          <!-- Page Body -->
          <div class="hk-pg-body">
             <!-- Container -->
-            <div class="container-xxl">
+            <div class="container">
                 <div class="row">
                     <div class="col-12">
                         <h3 class="d-inline-block">Organization<small> List</small></h3>

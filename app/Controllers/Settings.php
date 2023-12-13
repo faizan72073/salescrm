@@ -308,6 +308,7 @@ class Settings extends BaseController
 		$error = null;
 		$reason = $this->input->getpost('reason');
 		$id = $this->input->getpost('id');
+		// dd($id);
 		$sess_status = session()->get('status');
 		$sess_id = session()->get('id');
 		//

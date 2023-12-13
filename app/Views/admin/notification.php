@@ -1,8 +1,8 @@
 <?php
-
 // Top Bar End
 echo view('cpanel-layout/header');
 echo view('cpanel-layout/navbar');
+
 ?>
 <body>
    	<!-- Wrapper -->

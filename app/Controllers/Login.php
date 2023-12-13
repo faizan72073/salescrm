@@ -9,6 +9,14 @@ use App\Models\Model_Setting;
 //
 class Login extends BaseController
 {
+
+	public function __construct()
+	{
+
+		parent::__construct();
+		$this->db = \Config\Database::connect();
+		$this->input = \Config\Services::request();
+	}
 	//
 	public function index()
 	{
@@ -21,9 +29,30 @@ class Login extends BaseController
 	//
 	public function forget()
 	{
-		return view('admin/forget');
+		return view('auth/forget');
 	}
 
+	public function otp()
+	{
+		$email = session()->get('email');
+		if(empty($email)) {
+			return redirect()->to('login');
+		}
+		else{
+			return view('auth/otp');
+		}
+		
+	}
+	public function change_password()
+	{
+		$status = session()->get('status');
+		if(empty($status)) {
+			return redirect()->to('otp');
+		}
+		else{
+			return view('auth/change_password');
+		}
+	}
 	//
 	public function loginCheck()
 	{
@@ -133,6 +162,125 @@ class Login extends BaseController
 		}
 		// 				
 	}
+
+	public function forgot_password(){
+
+		$request = \Config\Services::request();
+		$validation = \Config\Services::validation();
+		//
+		$error = null;
+		$email = $request->getPost('email');
+		//
+		$Model_Users = new Model_Users();
+		$all_users = $Model_Users->get_users()->where('email',$email)->get()->getRow();
+	     
+		if($all_users == null){
+			$error = 'Email Address Not Exist';
+		}
+		//
+		$validate = $this->validate([
+			'email' => ['label' => 'email', 'rules' => 'required|trim'],
+		]);
+		//
+		if (!$validate) {
+			$error = $validation->listErrors();
+			$error = str_replace(array("\n", "\r"), '', $error);
+			$error = nl2br($error);
+		}
+        //
+		if(empty($error)){
+			// echo $all_users->email;
+			$generate = (rand(1,100000));
+			session()->set('otp', $generate);
+			session()->set('email', $email);
+			$this->checkotp($email);
+			// $msg = "url:".base_url('/').'/change_password';
+			$msg = $generate;
+			// dd($msg);
+			// send email
+			mail("faizanjamshaid0987@gmail.com","OTP",$msg);
+			return $this->response->setStatusCode(200)->setBody('OTP Sent To Email Successfully');
+		}
+		//
+		else {
+			return $this->response->setStatusCode(500, $error);
+		}
+		
+	}
+	
+	public function checkotp(){
+
+		$request = \Config\Services::request();
+		$validation = \Config\Services::validation();
+		//
+		$error = null;
+		$enterotp = $request->getPost('otp');
+		//
+		$validate = $this->validate([
+			'otp' => ['label' => 'otp', 'rules' => 'required|trim'],
+		]);
+		//
+		$otp = session()->get('otp');
+		// dd($otp);
+		if($enterotp != $otp){
+          $error = "Invalid Or Expire OTP";
+		}
+		//
+		if(!$validate) {
+			$error = $validation->listErrors();
+			$error = str_replace(array("\n", "\r"), '', $error);
+			$error = nl2br($error);
+		}
+		if(empty($error)){
+			session()->set('status','verefied');	
+			return $this->response->setStatusCode(200)->setBody('');
+		}
+	    else{
+			return $this->response->setStatusCode(500, $error);
+		}
+
+	}
+
+	public function changepassword(){	
+
+		$request = \Config\Services::request();	
+		$validation = \Config\Services::validation();	
+		//
+		$error = null;
+		$email = session()->get('email');	
+		$password = $request->getPost('password');
+		$confirm_password = $request->getPost('confirm_password');
+		//
+		$validate = $this->validate([
+			'password' => ['label' => 'password', 'rules' => 'required|trim'],
+			'confirm_password' => ['label' => 'confirm_password', 'rules' => 'required|trim'],
+		]);
+		//
+		if (!$validate) {
+			$error = $validation->listErrors();
+			$error = str_replace(array("\n", "\r"), '', $error);
+			$error = nl2br($error);
+		}
+		if($password != $confirm_password){	
+			$error = "password do not match";
+		}
+		//
+		if(empty($error)){	
+
+			$db = \Config\Services::database();
+			$data = [
+				'password' => md5($password),
+				'pass_string' => $password,
+			];
+			$builder = $this->db->table('users')->where('email', $email)->update($data);
+			session()->destroy();
+			return $this->response->setStatusCode(200)->setBody('password changed Successfully');
+		}
+	    else{
+			return $this->response->setStatusCode(500, $error);
+		}
+
+	}
 	//
 	public function logout()
 	{
@@ -151,33 +299,36 @@ class Login extends BaseController
 		//
 	}
 	//
-	public function forgot_password()
-	{
-		$request = \Config\Services::request();
-		$db = \Config\Database::connect();
-		//
-		$email = $request->getPost('fp_email');
-		//
-		$builder = $db->table('bo_users');
-		$builder->select('mobilephone,pass_string');
-		$builder->where('email', $email);
-		$query = $builder->get()->getRow();
+	// public function forgot_password()
+	// {
+	// 	$request = \Config\Services::request();
+	// 	$db = \Config\Database::connect();
+	// 	//
+	// 	$error = null;
+	// 	$email = $request->getPost('email');
 
-		if ($query) {
-			$mobile = $query->mobilephone;
-			$pass = $query->pass_string;
-			//
-			echo '<p style="color:green;">Your password has been sent to your email </p>';
-			//
-			$msg = 'You have requested for your LBI INVENTORY password retrieval . Your password is' . $pass;
+	// 	// dd($email);
+	// 	//
+	// 	$builder = $db->table('users');
+	// 	$builder->select('mobilephone,pass_string');
+	// 	$builder->where('email', $email);
+	// 	$query = $builder->get()->getRow();
 
-			$emailnmsg = new Model_SMSnEmail();
-			$emailnmsg->sendEmail($email, $msg);
-			// 
-		} else {
-			echo '<p style="color:red;">Invalid email or no such email exist</p>';
-		}
-	}
+	// 	if ($query) {
+	// 		$mobile = $query->mobilephone;
+	// 		$pass = $query->pass_string;
+	// 		//
+	// 		echo '<p style="color:green;">Your password has been sent to your email </p>';
+	// 		//
+	// 		$msg = 'You have requested for your LBI INVENTORY password retrieval . Your password is' . $pass;
+
+	// 		$emailnmsg = new Model_SMSnEmail();
+	// 		$emailnmsg->sendEmail($email, $msg);
+	// 		// 
+	// 	} else {
+	// 		echo '<p style="color:red;">Invalid email or no such email exist</p>';
+	// 	}
+	// }
 	//
 	public function generate_otp()
 	{

@@ -4,31 +4,28 @@ namespace App\Controllers;
 
 use App\Models\Model_Customer;
 use App\Models\Model_Package;
+use App\Models\Model_Leads;
 
-class Dashboard extends BaseController
+class Search extends BaseController
 {
 	public function __construct()
 	{
-
 		parent::__construct();
 		$this->db = \Config\Database::connect();
 		$this->input = \Config\Services::request();
-
-	}
-	public function index()
-	{
-		$sess_status = session()->get('status');
-		if(isLoggedIn() && access_crud('Dashboard','view')){
-			return view('admin/dashboard');
-		}else{
-			return redirect()->to(base_url('403'));
-		}
 	}
 
 	public function search(){
 
 		$searchQuery = $this->request->getGet('search');
-		echo $searchQuery;
+		$getsearchdata = new Model_Leads();
+		$searchdata = $getsearchdata->get_Leads()->like('deal_title', "%$searchQuery%")->get()->getResult();
+		if(!empty($searchdata)){
+			dd($searchdata);
+		}
+		else{
+			echo "No Data found";			
+		}
 
 	}	
 
