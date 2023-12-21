@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Model_Contacts;
+use App\Models\Model_EmailSMTP;
 use \Hermawan\DataTables\DataTable;
 
 
@@ -87,7 +88,12 @@ class Contacts extends BaseController
 			$insert_id = $this->db->insertID();
 			$this->db->transComplete();
 			create_action_log("Contact Id (".$insert_id.")");
+			$EmailSMTP = new Model_EmailSMTP();
+			$sendmail = $EmailSMTP->sendMail('m.talha@lbi.net.pk','hello testing','hello hi');
+			echo $sendmail;
 			return $this->response->setStatusCode(200)->setBody('Contact Added Successfully');
+
+			
 		} else {
 			return $this->response->setStatusCode(500, $error);
 		}

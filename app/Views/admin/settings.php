@@ -650,52 +650,61 @@ echo view('cpanel-layout/navbar');
                             <h2 class="HeadingLabel">Email SMTP Server Setup</h2>
                         </div>
                     </div>
+                    <form method="post" id="SMTPsettingform">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label class="FieldLabel">Email Address:</label>
-                                <input name="ctl00$MainContent$txtSMTPEmailAddress" type="text" maxlength="100" id="MainContent_txtSMTPEmailAddress" onblur="ValidateEmail(this)" autocomplete="off" class="form-control">
+                                <input type="hidden" name="smtpid" id="smtpid" value="<?= $EmailSMTP->id ?>">
+                                <input name="email" value="<?= $EmailSMTP->email ?>" type="text" maxlength="100" id="MainContent_txtSMTPEmailAddress" onblur="ValidateEmail(this)" autocomplete="off" class="form-control">
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <div class="form-group">
                                 <label class="FieldLabel">Password: </label>
                                 <div>
-                                    <input name="ctl00$MainContent$txtSMTPEmailPassword" maxlength="20" id="MainContent_txtSMTPEmailPassword" type="password" autocomplete="off" class="form-control">
+                                    <input name="password" value="<?= $EmailSMTP->password ?>" maxlength="20" id="MainContent_txtSMTPEmailPassword" type="password" autocomplete="off" class="form-control">
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-group">
-                                <label class="FieldLabel">Confirm Password: </label>
-                                <div>
-                                    <input name="ctl00$MainContent$txtSMTPEmailConfirmPwd" maxlength="20" id="MainContent_txtSMTPEmailConfirmPwd" autocomplete="off" type="password" class="form-control">
-                                </div>
-                            </div>
-                        </div>
+
                     </div>
                     <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="FieldLabel">Display Name:</label>
-                                <input name="ctl00$MainContent$txtDisplayName" type="text" maxlength="40" id="MainContent_txtDisplayName" class="p form-control">
-                                <input type="hidden" name="ctl00$MainContent$hdnSMTPId" id="MainContent_hdnSMTPId" value="0">
+                                <input name="sent_title" value="<?= $EmailSMTP->sent_title ?>" type="text" maxlength="40" id="sent_title" class="p form-control">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="FieldLabel">SMTP Server Name:</label>
-                                <input name="ctl00$MainContent$txtSMTPName" type="text" maxlength="100" id="MainContent_txtSMTPName" class="form-control">
+                                <input name="host" value="<?= $EmailSMTP->host ?>" type="text" maxlength="100" id="host" class="form-control">
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="FieldLabel">Port Number:</label>
-                                <input name="ctl00$MainContent$txtPortNo" type="text" maxlength="5" id="MainContent_txtPortNo" onkeypress="return isNumber(event)" class="form-control">
+                                <input name="port" value="<?= $EmailSMTP->port ?>" type="number" maxlength="5" id="port" onkeypress="return isNumber(event)" class="form-control">
                             </div>
                         </div>
                     </div>
+
                     <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="FieldLabel">Sent Email</label>
+                                <input name="sent_email" value="<?= $EmailSMTP->sent_email ?>" type="text" maxlength="40" id="sent_email" class="p form-control">
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label class="FieldLabel">Reply Email</label>
+                                <input name="reply_email" value="<?= $EmailSMTP->reply_email ?>" type="text" maxlength="100" id="reply_email" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div class="row">
                         <div class="col-md-4">
                             <div class="form-group">
                                 <label class="FieldLabel">Enable SSL:</label>
@@ -756,13 +765,13 @@ echo view('cpanel-layout/navbar');
                                 </table>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="form-group row">
                         <div class="controls col-md-12 ">
                             <input type="submit" value="Test Save" id="" class="btn btn-primary pull-right">
                         </div>
                     </div>
-                    <input type="hidden" name="ctl00$MainContent$hdnSMTPErroMsg" id="MainContent_hdnSMTPErroMsg">
+                    </form>
                 </div>
             </div>
 
@@ -1950,6 +1959,35 @@ function addInputField() {
     });
 </script>
 
+<!-----update SMTP SERVE Setting Ajax----->
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#SMTPsettingform").submit(function() {
+            $('#action_loader').modal('show');
+            $.ajax({
+                type: "POST",
+                url: '<?php echo base_url(); ?>/settings/update_smtp_setting',
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function(data) {
+                    toastr.success(data);
+                    setTimeout(function() {
+                        $('#action_loader').modal('hide');
+                        location.reload();
+                    }, 1000);
+                },
+                error: function(jqXHR, text, error) {
+                    // Displaying if there are any errors
+                    $('#action_loader').modal('hide');
+                    toastr.danger(error);
+                }
+            });
+            return false;
+        });
+    });
+</script>
 
 
 <script>

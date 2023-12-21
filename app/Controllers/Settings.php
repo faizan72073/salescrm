@@ -5,6 +5,7 @@ use App\Models\Model_Setting;
 use App\Models\Model_Pipeline;
 use App\Models\Model_Reason;
 use App\Models\Model_Tools;
+use App\Models\Model_EmailSMTP;
 use CodeIgniter\HTTP\Request;
 
 class Settings extends BaseController
@@ -31,8 +32,10 @@ class Settings extends BaseController
 
 			$lostreason = new Model_Reason();
 			$data['lostreason'] = $lostreason->get_lostReason();
-			
-	
+
+			$EmailSMTP = new Model_EmailSMTP();
+			$data['EmailSMTP'] = $EmailSMTP->email_settings()->get()->getRow();
+
 			$tool = new Model_Tools();
 			$data['country'] = $tool->get_country();
 			$data['state'] = $tool->get_state();
@@ -1927,7 +1930,64 @@ public function show_company()
 				</tr>
 			<?php }
 		}
-		
+		public function update_smtp_setting(){
 
+			$error = null;
+			$sess_status = session()->get('status');
+			$sess_id = session()->get('id');
+			if (!isLoggedIn()) {
+				$error = "Session Timeout";
+			}
+			if ($sess_status != 'admin') {
+				$error = "Access Denied";
+			}
+			$smtpid = $this->input->getPost('smtpid');
+			$email = $this->input->getPost('email');
+			$password = $this->input->getPost('password');
+			$sent_title = $this->input->getPost('sent_title');
+			$host = $this->input->getPost('host');
+			$port = $this->input->getPost('port');
+			$sent_email = $this->input->getPost('sent_email');
+			$reply_email = $this->input->getPost('reply_email');
+			
+			//
+			$validation = \config\Services::validation();
+			//
+			$validate = $this->validate([
+				'email' => ['label' => 'email', 'rules' => 'required|trim'],
+				'password' => ['label' => 'password', 'rules' => 'required|trim'],
+				'sent_title' => ['label' => 'sent_title', 'rules' => 'required|trim'],
+				'host' => ['label' => 'host', 'rules' => 'required|trim'],
+				'port' => ['label' => 'port', 'rules' => 'required|trim'],
+				'sent_email' => ['label' => 'sent email', 'rules' => 'required|trim'],
+				'reply_email' => ['label' => 'reply email', 'rules' => 'required|trim'],
+			]);
+			//
+			if (!$validate) {
+				$error = $validation->listErrors();
+				$error = str_replace(array("\n", "\r"), '', $error);
+				$error = nl2br($error);
+			}
+			//
+			if (empty($error)) {
+				$this->db->transStart();
+				$data = array(
+					'email' => $email,
+					'password' => $password,
+					'sent_title' => $sent_title,
+					'host' => $host,
+					'port' => $port,
+					'sent_email' => $sent_email,
+					'reply_email' => $reply_email,
+				);
+				//
+				$builder = $this->db->table('email_settings');
+				$builder->update($data);
+	
+				$this->db->transComplete();
+				create_action_log("SMTP Id (".$smtpid.")");
+				return $this->response->setStatusCode(200)->setBody('SMTP Settings Changed Successfully');
+			}
+		}	
 
 }
